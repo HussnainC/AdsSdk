@@ -1,5 +1,6 @@
 package com.codex.googleadssdk.nativeAds
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 
-class NativeAdsUtil(private val context: Context) {
+class NativeAdsUtil() {
 
     private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
         adView.apply {
@@ -117,7 +118,7 @@ class NativeAdsUtil(private val context: Context) {
         isAdAllowed: Boolean,
         adFrame: FrameLayout,
         adType: EnumAdType,
-        nativeId: String
+        nativeId: String, context: Activity
     ) {
         if (isAdAllowed) {
             if (context.isNetworkConnected()) {
@@ -203,7 +204,7 @@ class NativeAdsUtil(private val context: Context) {
         isAdAllowed: Boolean,
         adFrame: FrameLayout,
         adType: EnumAdType,
-        nativeId: List<String>
+        nativeId: List<String>, context: Activity
     ) {
         if (isAdAllowed) {
             if (context.isNetworkConnected()) {
@@ -268,7 +269,7 @@ class NativeAdsUtil(private val context: Context) {
                         "nativeAds".showLog("${nativeAdCount}.....${nativeId.lastIndex}")
                         if (nativeAdCount < nativeId.size) {
                             "nativeAds".showLog("Again load at ${nativeAdCount}")
-                            loadNativeAd(isAdAllowed, adFrame, adType, nativeId)
+                            loadNativeAd(isAdAllowed, adFrame, adType, nativeId, context)
                         } else {
                             "nativeAds".showLog("Fail")
                             nativeAdCount = 0

@@ -28,7 +28,11 @@ class MainActivity : AppCompatActivity() {
         loadNative()
         loadBanner()
         findViewById<Button>(R.id.btnInterstitial).setOnClickListener {
-            interstitialAdClass.showInterstitialAdNew(isAdAllowed = true, activity = this, ids = listOf(getString(R.string.testInterstitialAdId)))
+            interstitialAdClass.showInterstitialAdNew(
+                isAdAllowed = true,
+                activity = this,
+                ids = listOf(getString(R.string.testInterstitialAdId))
+            )
         }
 
     }
@@ -46,12 +50,12 @@ class MainActivity : AppCompatActivity() {
             isAdAllowed = true,
             adFrame = findViewById(R.id.nativeAdLayout),
             adType = EnumAdType.Medium,
-            nativeId = getString(R.string.nativeTestAd)
+            nativeId = getString(R.string.nativeTestAd), this
         )
     }
 
     private fun initAds() {
-        nativeAdsUtil = NativeAdsUtil(this)
+        nativeAdsUtil = NativeAdsUtil()
         interstitialAdClass = InterstitialAdClass(this)
         bannerAd = BannerAd(this)
         splashOpenAppWithInterstitial = SplashOpenAppWithInterstitial(

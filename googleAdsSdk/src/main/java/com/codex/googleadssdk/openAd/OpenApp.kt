@@ -170,6 +170,11 @@ class OpenApp(
                     return
                 }
                 fetchAd()
+            } else {
+                if (isFromPermission) {
+                    return
+                }
+                fetchAd()
             }
 
         }
