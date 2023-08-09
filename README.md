@@ -42,7 +42,7 @@
     val bannerAd= BannerAd(context)
     bannerAd.showBanner(
             isAdAllowed = true,
-            bannerLayout = findViewById(R.id.bannerAdLayout),\\FrameLayout to for BannerAd View
+            bannerLayout = findViewById(R.id.bannerAdLayout),\\FrameLayout for BannerAd View
             unitId = "ca-app-pub-3940256099942544/6300978111"
         )
 
@@ -58,9 +58,10 @@
 
   # NativeAd Implementation
     \\Create instance of NativeAdUtil
-    val nativeAd= NativeAdUtil(context)
-    bannerAd.showBanner(
+    val nativeAd= NativeAdUtil()
+    nativeAd.loadNativeAd(
             isAdAllowed = true,
-            bannerLayout = findViewById(R.id.bannerAdLayout),\\FrameLayout to for BannerAd View
-            unitId = "ca-app-pub-3940256099942544/6300978111"
+            adFrame = findViewById(R.id.nativeAdLayout),\\FrameLayout for NativeAd View
+            adType = EnumAdType.Medium, /*(EnumAdType.Medium,EnumAdType.Small,EnumAdType.Large)*/
+            nativeId = "ca-app-pub-3940256099942544/2247696110", activity
         )
