@@ -34,7 +34,18 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
     </style>
+    <style name="adCornorCards" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/adCard</item>
+    </style>
 
+
+    <style name="adCard" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/_10sdp</item>
+        <item name="cornerSizeTopLeft">@dimen/_10sdp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
     <style name="FullScreenDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

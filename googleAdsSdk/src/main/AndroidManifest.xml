@@ -11,6 +11,5 @@
             android:theme="@style/myAdTheme"
             tools:replace="android:theme" />
 
-
     </application>
 </manifest>

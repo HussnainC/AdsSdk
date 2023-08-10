@@ -118,27 +118,39 @@ class NativeAdsUtil() {
         isAdAllowed: Boolean,
         adFrame: FrameLayout,
         adType: EnumAdType,
-        nativeId: String, context: Activity
+        nativeId: String, activity: Activity
     ) {
         if (isAdAllowed) {
-            if (context.isNetworkConnected()) {
+            if (activity.isNetworkConnected()) {
                 adFrame.beVisible()
                 var shimmerView: ShimmerFrameLayout? = null
                 if (adType == EnumAdType.Small)
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_small_native_ad_view,
                         null,
                         false
                     ) as ShimmerFrameLayout
+                else if (adType == EnumAdType.Small2)
+                    shimmerView = LayoutInflater.from(activity).inflate(
+                        R.layout.shimmer_native_ad_view_small_2,
+                        null,
+                        false
+                    ) as ShimmerFrameLayout
                 else if (adType == EnumAdType.Large)
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_native_ad_view,
                         null,
                         false
                     ) as ShimmerFrameLayout
                 else if (adType == EnumAdType.Medium) {
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_native_ad_view_medium,
+                        null,
+                        false
+                    ) as ShimmerFrameLayout
+                } else if (adType == EnumAdType.Medium2) {
+                    shimmerView = LayoutInflater.from(activity).inflate(
+                        R.layout.shimmer_native_ad_view_medium_2,
                         null,
                         false
                     ) as ShimmerFrameLayout
@@ -148,18 +160,23 @@ class NativeAdsUtil() {
                 adFrame.tag = 1
                 val layoutRes = if (adType == EnumAdType.Small) {
                     R.layout.small_native_ad_view
+                } else if (adType == EnumAdType.Small2) {
+                    R.layout.native_ad_view_small_2
                 } else if (adType == EnumAdType.Large) {
                     R.layout.native_ad_view
-                } else
+                } else if (adType == EnumAdType.Medium) {
                     R.layout.native_ad_view_medium
+                } else
+                    R.layout.native_ad_view_medium_2
 
-                val builder = AdLoader.Builder(context, nativeId)
+                val builder = AdLoader.Builder(activity, nativeId)
                 builder.forNativeAd { nativeAd ->
                     val adView =
-                        LayoutInflater.from(context).inflate(layoutRes, null, false) as NativeAdView
-                    if (adType == EnumAdType.Small)
+                        LayoutInflater.from(activity)
+                            .inflate(layoutRes, null, false) as NativeAdView
+                    if (adType == EnumAdType.Small || adType==EnumAdType.Small2)
                         populateNativeAdViewSmall(nativeAd, adView)
-                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium)
+                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
                         populateNativeAdView(nativeAd, adView)
                     adFrame.removeAllViews()
 
@@ -204,49 +221,65 @@ class NativeAdsUtil() {
         isAdAllowed: Boolean,
         adFrame: FrameLayout,
         adType: EnumAdType,
-        nativeId: List<String>, context: Activity
+        nativeId: List<String>, activity: Activity
     ) {
         if (isAdAllowed) {
-            if (context.isNetworkConnected()) {
+            if (activity.isNetworkConnected()) {
                 adFrame.beVisible()
                 adFrame.removeAllViews()
                 var shimmerView: ShimmerFrameLayout? = null
                 if (adType == EnumAdType.Small)
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_small_native_ad_view,
                         null,
                         false
                     ) as ShimmerFrameLayout
+                else if (adType == EnumAdType.Small2)
+                    shimmerView = LayoutInflater.from(activity).inflate(
+                        R.layout.shimmer_native_ad_view_small_2,
+                        null,
+                        false
+                    ) as ShimmerFrameLayout
                 else if (adType == EnumAdType.Large)
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_native_ad_view,
                         null,
                         false
                     ) as ShimmerFrameLayout
                 else if (adType == EnumAdType.Medium) {
-                    shimmerView = LayoutInflater.from(context).inflate(
+                    shimmerView = LayoutInflater.from(activity).inflate(
                         R.layout.shimmer_native_ad_view_medium,
+                        null,
+                        false
+                    ) as ShimmerFrameLayout
+                } else if (adType == EnumAdType.Medium2) {
+                    shimmerView = LayoutInflater.from(activity).inflate(
+                        R.layout.shimmer_native_ad_view_medium_2,
                         null,
                         false
                     ) as ShimmerFrameLayout
                 }
 
-
                 adFrame.addView(shimmerView)
+                adFrame.tag = 1
                 val layoutRes = if (adType == EnumAdType.Small) {
                     R.layout.small_native_ad_view
+                } else if (adType == EnumAdType.Small2) {
+                    R.layout.native_ad_view_small_2
                 } else if (adType == EnumAdType.Large) {
                     R.layout.native_ad_view
-                } else
+                } else if (adType == EnumAdType.Medium) {
                     R.layout.native_ad_view_medium
+                } else
+                    R.layout.native_ad_view_medium_2
 
-                val builder = AdLoader.Builder(context, nativeId[nativeAdCount])
+                val builder = AdLoader.Builder(activity, nativeId[nativeAdCount])
                 builder.forNativeAd { nativeAd ->
-                    val adView = LayoutInflater.from(context)
+                    val adView = LayoutInflater.from(activity)
                         .inflate(layoutRes, null, false) as NativeAdView
-                    if (adType == EnumAdType.Small)
+                    if (adType == EnumAdType.Small || adType==EnumAdType.Small2)
                         populateNativeAdViewSmall(nativeAd, adView)
-                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium)
+                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
                         populateNativeAdView(nativeAd, adView)
 
                     adFrame.removeAllViews()
@@ -269,7 +302,7 @@ class NativeAdsUtil() {
                         "nativeAds".showLog("${nativeAdCount}.....${nativeId.lastIndex}")
                         if (nativeAdCount < nativeId.size) {
                             "nativeAds".showLog("Again load at ${nativeAdCount}")
-                            loadNativeAd(isAdAllowed, adFrame, adType, nativeId, context)
+                            loadNativeAd(isAdAllowed, adFrame, adType, nativeId, activity)
                         } else {
                             "nativeAds".showLog("Fail")
                             nativeAdCount = 0
@@ -308,6 +341,7 @@ class NativeAdsUtil() {
         this.visibility = View.VISIBLE
     }
 }
+
 
 
 

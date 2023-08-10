@@ -49,6 +49,7 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:22.2.0"
     // GLIDE
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }
@@ -59,7 +60,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.HussnainC'
                 artifactId = 'AdsSdk'
-                version = 'v1.0.8'
+                version = 'v1.0.9'
             }
         }
         repositories {
