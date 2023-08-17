@@ -52,7 +52,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/ad_call_to_action_new"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_44sdp"
+            android:layout_height="@dimen/_49sdp"
             android:layout_marginHorizontal="10dp"
             android:backgroundTint="@color/shimmer_holder_color"
             android:gravity="center"
@@ -112,6 +112,17 @@
                         android:visibility="visible" />
                 </LinearLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/ad_body_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="@dimen/_4sdp"
+                android:background="@color/shimmer_holder_color"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_9sdp"
+                android:visibility="visible" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

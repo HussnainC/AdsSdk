@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         nativeAdsUtil.loadNativeAd(
             isAdAllowed = true,
             adFrame = findViewById(R.id.nativeAdLayout),
-            adType = EnumAdType.Medium,
+            adType = EnumAdType.Medium2,
             nativeId = getString(R.string.nativeTestAd), this
         )
     }

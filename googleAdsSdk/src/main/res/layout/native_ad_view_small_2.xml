@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/unifiedNativeAdView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/nativeSmallAd2bgcolor">
 
     <com.google.android.material.card.MaterialCardView
+        style="@style/adCornorCards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/cardbgcolor"
-        style="@style/adCornorCards"
+        app:cardBackgroundColor="@color/nativeSmallAd2bgcolor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +30,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/adButtonColor"
                     android:gravity="center"
                     android:paddingVertical="@dimen/_1sdp"
                     android:paddingStart="@dimen/_5sdp"
@@ -56,12 +56,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/ad_call_to_action_new"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_40sdp"
+                android:layout_height="@dimen/_44sdp"
                 android:layout_marginHorizontal="10dp"
-                android:backgroundTint="#56ABE4"
+                android:backgroundTint="@color/white"
                 android:gravity="center"
                 android:text="DOWNLOAD"
-                android:textColor="@android:color/white"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp"
                 app:cornerRadius="@dimen/_15sdp"
                 app:rippleColor="@color/white" />
@@ -97,7 +97,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="2"
-                            android:textColor="#FFFFFFFF"
+                            android:textColor="@color/white"
 
                             android:textSize="@dimen/_11sdp"
                             android:textStyle="bold" />
@@ -108,7 +108,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:maxLines="2"
-                            android:textColor="#FFFFFFFF"
+                            android:textColor="@color/white"
 
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
