@@ -7,7 +7,7 @@
 	} 
 # Implementation Gradle Groovy
     dependencies {
-		implementation 'com.github.HussnainC:AdsSdk:v1.1.0'
+		implementation 'com.github.HussnainC:AdsSdk:v1.1.1'
 	  }
 
 # Implementation Gradle Kotlin
