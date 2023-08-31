@@ -35,7 +35,7 @@
                     android:paddingStart="@dimen/_5sdp"
                     android:paddingEnd="@dimen/_5sdp"
                     android:text="AD"
-                    android:textColor="@color/white"
+                    android:textColor="@color/nativeSmallAd2TextColor"
                     android:textSize="@dimen/_8sdp" />
 
                 <View
@@ -58,10 +58,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_44sdp"
                 android:layout_marginHorizontal="10dp"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/nativeSmallAd2ButtonColor"
                 android:gravity="center"
                 android:text="DOWNLOAD"
-                android:textColor="@color/black"
+                android:textColor="@color/nativeSmallAd2ButtonTextColor"
                 android:textSize="@dimen/_12sdp"
                 app:cornerRadius="@dimen/_15sdp"
                 app:rippleColor="@color/white" />
@@ -97,7 +97,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="2"
-                            android:textColor="@color/white"
+                            android:textColor="@color/nativeSmallAd2TextColor"
 
                             android:textSize="@dimen/_11sdp"
                             android:textStyle="bold" />
@@ -108,7 +108,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_2sdp"
                             android:maxLines="2"
-                            android:textColor="@color/white"
+                            android:textColor="@color/nativeSmallAd2TextColor"
 
                             android:textSize="@dimen/_9sdp"
                             android:visibility="visible" />
