@@ -40,11 +40,11 @@ class NativeAdsUtil() {
         nativeAd.body?.let { body ->
             adView.bodyView?.visibility = View.VISIBLE
             (adView.bodyView as TextView).text = body
-            if (adType == EnumAdType.Medium2 || adType == EnumAdType.Small2) {
+            if (adType == EnumAdType.Medium2) {
                 adView.findViewById<TextView>(R.id.ad_body_2).text = body
             }
         } ?: run {
-            if (adType == EnumAdType.Medium2 || adType == EnumAdType.Small2) {
+            if (adType == EnumAdType.Medium2) {
                 adView.findViewById<TextView>(R.id.ad_body_2).visibility = View.INVISIBLE
             }
             adView.bodyView?.visibility = View.INVISIBLE
@@ -77,7 +77,11 @@ class NativeAdsUtil() {
         }
     }
 
-    private fun populateNativeAdViewSmall(nativeAd: NativeAd, adView: NativeAdView) {
+    private fun populateNativeAdViewSmall(
+        nativeAd: NativeAd,
+        adView: NativeAdView,
+        adType: EnumAdType
+    ) {
         adView.apply {
             headlineView = findViewById(R.id.ad_headline)
             bodyView = findViewById(R.id.ad_body)
@@ -91,13 +95,17 @@ class NativeAdsUtil() {
 
         nativeAd.body?.let { body ->
             adView.bodyView?.visibility = View.VISIBLE
-            (adView.bodyView as TextView).apply {
-                text = body
-                isSelected = true
+            (adView.bodyView as TextView).text = body
+            if (adType == EnumAdType.Small2) {
+                adView.findViewById<TextView>(R.id.ad_body_2).text = body
             }
         } ?: run {
+            if (adType == EnumAdType.Small2) {
+                adView.findViewById<TextView>(R.id.ad_body_2).visibility = View.INVISIBLE
+            }
             adView.bodyView?.visibility = View.INVISIBLE
         }
+
 
         nativeAd.callToAction?.let { callToAction ->
             adView.callToActionView?.visibility = View.VISIBLE
@@ -186,7 +194,7 @@ class NativeAdsUtil() {
                         LayoutInflater.from(activity)
                             .inflate(layoutRes, null, false) as NativeAdView
                     if (adType == EnumAdType.Small || adType == EnumAdType.Small2 || adType == EnumAdType.Small3)
-                        populateNativeAdViewSmall(nativeAd, adView)
+                        populateNativeAdViewSmall(nativeAd, adView, adType)
                     else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
                         populateNativeAdView(nativeAd, adView, adType)
                     adFrame.removeAllViews()
@@ -297,7 +305,7 @@ class NativeAdsUtil() {
                         LayoutInflater.from(activity)
                             .inflate(layoutRes, null, false) as NativeAdView
                     if (adType == EnumAdType.Small || adType == EnumAdType.Small2 || adType == EnumAdType.Small3)
-                        populateNativeAdViewSmall(nativeAd, adView)
+                        populateNativeAdViewSmall(nativeAd, adView, adType)
                     else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
                         populateNativeAdView(nativeAd, adView, adType)
                     adFrame.removeAllViews()
