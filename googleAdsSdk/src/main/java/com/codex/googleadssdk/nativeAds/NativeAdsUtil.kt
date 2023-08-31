@@ -40,11 +40,11 @@ class NativeAdsUtil() {
         nativeAd.body?.let { body ->
             adView.bodyView?.visibility = View.VISIBLE
             (adView.bodyView as TextView).text = body
-            if (adType == EnumAdType.Medium2) {
+            if (adType == EnumAdType.Medium2 || adType == EnumAdType.Small2) {
                 adView.findViewById<TextView>(R.id.ad_body_2).text = body
             }
         } ?: run {
-            if (adType == EnumAdType.Medium2) {
+            if (adType == EnumAdType.Medium2 || adType == EnumAdType.Small2) {
                 adView.findViewById<TextView>(R.id.ad_body_2).visibility = View.INVISIBLE
             }
             adView.bodyView?.visibility = View.INVISIBLE

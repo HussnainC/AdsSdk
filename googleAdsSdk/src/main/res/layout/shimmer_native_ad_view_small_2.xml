@@ -124,6 +124,19 @@
 
 
             </LinearLayout>
+            <TextView
+                android:id="@+id/ad_body_2"
+                android:layout_marginHorizontal="6dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:maxLines="2"
+                android:background="@color/shimmer_holder_color"
+                android:textColor="@color/nativeSmallAd2TextColor"
+
+                android:textSize="@dimen/_9sdp"
+                android:visibility="visible" />
 
         </LinearLayout>
 
