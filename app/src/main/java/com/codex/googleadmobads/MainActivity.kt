@@ -1,12 +1,13 @@
 package com.codex.googleadmobads
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
-import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.codex.googleadssdk.bannerAds.BannerAd
-import com.codex.googleadssdk.enums.EnumAdType
+import com.codex.googleadssdk.dataclass.NativeAdDetail
 import com.codex.googleadssdk.interstitalAd.InterstitialAdClass
 import com.codex.googleadssdk.nativeAds.NativeAdsUtil
 import com.codex.googleadssdk.openAd.SplashOpenAppWithInterstitial
@@ -20,11 +21,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initAds()
-        if (savedInstanceState == null) {
-            splashOpenAppWithInterstitial.loadAndShowOpenAd(context = this, work = {
-                Toast.makeText(this, "Ad Dismiss", Toast.LENGTH_SHORT).show()
-            })
-        }
+//        if (savedInstanceState == null) {
+//            splashOpenAppWithInterstitial.loadAndShowOpenAd(context = this, work = {
+//                Toast.makeText(this, "Ad Dismiss", Toast.LENGTH_SHORT).show()
+//            })
+//        }
         loadNative()
         loadBanner()
         findViewById<Button>(R.id.btnInterstitial).setOnClickListener {
@@ -47,10 +48,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadNative() {
         nativeAdsUtil.loadNativeAd(
-            isAdAllowed = true,
-            adFrame = findViewById(R.id.nativeAdLayout),
-            adType = EnumAdType.Medium2,
-            nativeId = getString(R.string.nativeTestAd), this
+            true,
+            R.layout.placeholder,
+            R.layout.native_ad,
+            findViewById(R.id.nativeAdLayout),
+            getString(R.string.nativeTestAd),
+            this,
+            object : NativeAdsUtil.NativeAdListener {
+                override fun onAdLoad(
+                    nativeAd: NativeAdDetail,
+                    nativeAdView: View
+                ) {
+
+                }
+
+                override fun onFailToLoad(message: String) {
+                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                }
+
+            }
         )
     }
 

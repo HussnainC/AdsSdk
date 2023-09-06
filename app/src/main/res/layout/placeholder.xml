@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/_5sdp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:background="@android:color/darker_gray"
+        android:gravity="center"
+        android:text="Place Holder"
+        android:textSize="@dimen/_16sdp" />
+</androidx.constraintlayout.widget.ConstraintLayout>

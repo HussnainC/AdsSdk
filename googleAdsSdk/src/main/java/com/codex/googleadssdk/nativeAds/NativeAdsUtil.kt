@@ -3,11 +3,13 @@ package com.codex.googleadssdk.nativeAds
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.codex.googleadssdk.R
+import com.codex.googleadssdk.dataclass.NativeAdDetail
 import com.codex.googleadssdk.enums.EnumAdType
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.codex.googleadssdk.utils.showLog
@@ -236,6 +238,52 @@ class NativeAdsUtil() {
 
     }
 
+
+    fun loadNativeAd(
+        isAdAllowed: Boolean,
+        placeHolderLayoutId: Int,
+        nativeAdView: Int,
+        adContainerView: ViewGroup,
+        nativeId: String, context: Activity, adListener: NativeAdListener
+    ) {
+        if (isAdAllowed) {
+            if (context.isNetworkConnected()) {
+                val shimmerLayout =
+                    LayoutInflater.from(context).inflate(placeHolderLayoutId, null, false)
+                val adView =
+                    LayoutInflater.from(context).inflate(nativeAdView, null, false)
+                adContainerView.removeAllViews()
+
+                adContainerView.addView(shimmerLayout)
+                val adLoader = AdLoader.Builder(context, nativeId)
+                    .forNativeAd { nativeAd ->
+                        val detail = NativeAdDetail(nativeAd)
+                        adContainerView.removeAllViews()
+                        adContainerView.addView(adView)
+                        adListener.onAdLoad(
+                            detail, adView
+                        )
+                    }
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            adListener.onFailToLoad(adError.message)
+                        }
+                    })
+                    .withNativeAdOptions(
+                        NativeAdOptions.Builder()
+                            .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build())
+                            .build()
+                    )
+                    .build()
+                adLoader.loadAd(AdRequest.Builder().build())
+            } else {
+                adContainerView.removeAllViews()
+            }
+        } else {
+            adContainerView.removeAllViews()
+        }
+    }
+
     fun loadNativeAd(
         isAdAllowed: Boolean,
         adFrame: FrameLayout,
@@ -333,7 +381,6 @@ class NativeAdsUtil() {
                             adFrame.removeAllViews()
                         }
 
-
                     }
 
                     override fun onAdLoaded() {
@@ -364,6 +411,12 @@ class NativeAdsUtil() {
     private fun View.beVisible() {
         this.visibility = View.VISIBLE
     }
+
+    interface NativeAdListener {
+        fun onAdLoad(nativeAd: NativeAdDetail, nativeAdView: View)
+        fun onFailToLoad(message: String)
+    }
+
 }
 
 
