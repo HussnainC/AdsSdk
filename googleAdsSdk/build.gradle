@@ -60,7 +60,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.HussnainC'
                 artifactId = 'AdsSdk'
-                version = 'v1.1.5'
+                version = 'v1.1.6'
             }
         }
         repositories {

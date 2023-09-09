@@ -107,7 +107,7 @@ class SplashOpenAppWithInterstitial(
                 internetConnectivity,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
             )
-            if ( isOpenAdAllowed && context.isNetworkConnected() && !isInterstitialShown && !isAdLoading && !isShowingAd) {
+            if (isOpenAdAllowed && context.isNetworkConnected() && !isInterstitialShown && !isAdLoading && !isShowingAd) {
                 try {
                     if (showLoadingScreen) {
                         showAdLoadingScreen(context)
@@ -192,8 +192,10 @@ class SplashOpenAppWithInterstitial(
             if (p0?.isNetworkConnected() == false) {
                 removeWindowView()
                 appOpenAd = null
-                if (work != null)
+                if (work != null) {
                     work!!()
+                    p0.unregisterReceiver(this)
+                }
             }
         }
 
@@ -208,6 +210,8 @@ class SplashOpenAppWithInterstitial(
                     appOpenAd = null
                     isShowingAd = false
                     work()
+                    context.unregisterReceiver(internetConnectivity)
+
 
                 }
 
@@ -215,6 +219,7 @@ class SplashOpenAppWithInterstitial(
                     isShowingAd = false
                     removeWindowView()
                     work()
+                    context.unregisterReceiver(internetConnectivity)
                 }
 
                 override fun onAdShowedFullScreenContent() {
