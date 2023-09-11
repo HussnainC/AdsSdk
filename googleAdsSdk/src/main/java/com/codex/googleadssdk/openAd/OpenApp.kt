@@ -33,7 +33,8 @@ class OpenApp(
     private val adIds: List<String>,
     private val isAdAllowed: Boolean,
     private val restrictedScreens: List<String> = listOf(),
-    private val loadingAdViewLayoutId: Int = OpenAdLayout.DefaultLayout.layoutId
+    private val loadingAdViewLayoutId: Int = OpenAdLayout.DefaultLayout.layoutId,
+    private val allowLoadingScreen: Boolean = true
 
 ) :
     Application.ActivityLifecycleCallbacks,
@@ -76,7 +77,7 @@ class OpenApp(
                     return
                 }
                 if (!isInterstitialShown && !isAdLoading && !isShowingAd) {
-                    if (dialog?.isShowing == false || dialog == null) {
+                    if (dialog?.isShowing == false || dialog == null && allowLoadingScreen) {
                         getBackgroundLayer(it)
                     }
                     val loadCallback: AppOpenAdLoadCallback = object : AppOpenAdLoadCallback() {
