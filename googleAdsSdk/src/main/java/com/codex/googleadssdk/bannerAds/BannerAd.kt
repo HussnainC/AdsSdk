@@ -1,45 +1,61 @@
 package com.codex.googleadssdk.bannerAds
 
+import android.app.Activity
 import android.content.Context
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.codex.googleadssdk.interfaces.AdCallBack
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import java.lang.Exception
 
-class BannerAd(private val context: Context) {
-    fun showBanner(isAdAllowed: Boolean, bannerLayout: FrameLayout, unitId: String) {
+object BannerAd {
+    fun showBanner(
+        isAdAllowed: Boolean,
+        adContainer: ViewGroup,
+        unitId: String,
+        context: Context, adCallBack: AdCallBack
+    ) {
         if (isAdAllowed) {
-            val adaptiveAds = AdaptiveAds(context)
             val adView = AdView(context)
             adView.adUnitId = unitId
-            bannerLayout.addView(adView)
-            val testDevices = ArrayList<String>()
-            testDevices.add(AdRequest.DEVICE_ID_EMULATOR)
-            val requestConfiguration = RequestConfiguration.Builder()
-                .setTestDeviceIds(testDevices)
-                .build()
-            MobileAds.setRequestConfiguration(requestConfiguration)
-            adView.setAdSize(adaptiveAds.adSize)
+            adView.setAdSize(getAdSize(context))
+            adView.adListener = object : AdListener() {
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    adContainer.removeAllViews()
+                    adCallBack.onAdLoaded()
+                    adContainer.addView(adView)
+                }
+
+                override fun onAdFailedToLoad(p0: LoadAdError) {
+                    super.onAdFailedToLoad(p0)
+                    adCallBack.onAdFailToLoad(Exception(p0.message))
+                    adContainer.removeAllViews()
+                }
+            }
             adView.loadAd(AdRequest.Builder().build())
         } else {
-            bannerLayout.removeAllViews()
+            adContainer.removeAllViews()
         }
 
     }
 
-    private inner class AdaptiveAds(private var contextA: Context) {
-        val adSize: AdSize
-            get() {
-                val outMetrics = contextA.resources.displayMetrics
-                val widthPixels = outMetrics.widthPixels.toFloat()
-                val density = outMetrics.density
-                val adWidth = (widthPixels / density).toInt()
-                return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-                    contextA,
-                    adWidth
-                )
-            }
+    private fun getAdSize(context: Context): AdSize {
+        val outMetrics = context.resources.displayMetrics
+        val widthPixels = outMetrics.widthPixels.toFloat()
+        val density = outMetrics.density
+        val adWidth = (widthPixels / density).toInt()
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
+            context,
+            adWidth
+        )
     }
+
+
 }
