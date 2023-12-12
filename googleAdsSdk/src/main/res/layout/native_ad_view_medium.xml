@@ -58,8 +58,7 @@
                         android:id="@+id/ad_app_icon"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:scaleType="centerCrop"
-                      />
+                        android:scaleType="centerCrop" />
 
                     <TextView
                         android:id="@+id/ad_headline"
@@ -68,6 +67,7 @@
                         android:layout_marginStart="5dp"
                         android:maxLines="2"
                         android:text="Native Ad"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -79,6 +79,7 @@
                     android:layout_marginTop="5dp"
                     android:maxLines="2"
                     android:text="Native Ad"
+                    android:textColor="@color/black"
                     android:textSize="10sp"
                     android:visibility="visible" />
             </LinearLayout>

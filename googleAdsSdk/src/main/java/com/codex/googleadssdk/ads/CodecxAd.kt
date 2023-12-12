@@ -190,10 +190,39 @@ object CodecxAd {
                             interAdId,
                             interAdAllowed,
                             startTimer = false,
-                            showLoadingLayout = true,
+                            showLoadingLayout = false,
                             timerMilliSec = 0L,
                             activity,
-                            adCallBack
+                            object : AdCallBack() {
+                                override fun onAdFailToLoad(error: Exception) {
+                                    super.onAdFailToLoad(error)
+                                    LoadingUtils.dismissScreen()
+                                    adCallBack.onAdFailToLoad(error)
+                                }
+
+                                override fun onAdShown() {
+                                    super.onAdShown()
+                                    LoadingUtils.dismissScreen()
+                                    adCallBack.onAdShown()
+                                }
+
+                                override fun onAdDismiss() {
+                                    super.onAdDismiss()
+                                    LoadingUtils.dismissScreen()
+                                    adCallBack.onAdDismiss()
+                                }
+
+                                override fun onAdLoaded() {
+                                    super.onAdLoaded()
+                                    adCallBack.onAdLoaded()
+                                }
+
+                                override fun onAdFailToShow(error: Exception) {
+                                    super.onAdFailToShow(error)
+                                    LoadingUtils.dismissScreen()
+                                    adCallBack.onAdFailToShow(error)
+                                }
+                            }
                         )
 
                     }
@@ -203,10 +232,39 @@ object CodecxAd {
                     interAdId,
                     interAdAllowed,
                     startTimer = false,
-                    showLoadingLayout = true,
+                    showLoadingLayout = false,
                     timerMilliSec = 0L,
                     activity,
-                    adCallBack
+                    object : AdCallBack() {
+                        override fun onAdFailToLoad(error: Exception) {
+                            super.onAdFailToLoad(error)
+                            LoadingUtils.dismissScreen()
+                            adCallBack.onAdFailToLoad(error)
+                        }
+
+                        override fun onAdShown() {
+                            super.onAdShown()
+                            LoadingUtils.dismissScreen()
+                            adCallBack.onAdShown()
+                        }
+
+                        override fun onAdDismiss() {
+                            super.onAdDismiss()
+                            LoadingUtils.dismissScreen()
+                            adCallBack.onAdDismiss()
+                        }
+
+                        override fun onAdLoaded() {
+                            super.onAdLoaded()
+                            adCallBack.onAdLoaded()
+                        }
+
+                        override fun onAdFailToShow(error: Exception) {
+                            super.onAdFailToShow(error)
+                            LoadingUtils.dismissScreen()
+                            adCallBack.onAdFailToShow(error)
+                        }
+                    }
                 )
             }
 

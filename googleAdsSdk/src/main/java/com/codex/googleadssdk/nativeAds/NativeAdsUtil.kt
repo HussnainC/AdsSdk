@@ -146,6 +146,7 @@ object NativeAdsUtil {
         val nativeView = LayoutInflater.from(context).inflate(nativeAdView, null, false)
         if (nativeView is NativeAdView) {
             adListener?.onAdShown()
+            adContainerView.addView(nativeView)
             populateNativeAdView(nativeAd, nativeView)
         } else {
             adListener?.onAdFailToShow(Exception("Type not match"))

@@ -10,13 +10,10 @@ object LoadingUtils {
     private var dialog: Dialog? = null
     fun showAdLoadingScreen(context: Activity, layoutId: Int) {
         try {
-            if (dialog == null) {
-                dialog = Dialog(context, R.style.FullScreenDialog)
-            }
-            if (!context.isFinishing && dialog?.isShowing == false) {
+            if (!context.isFinishing ) {
                 val adLoadingView =
                     LayoutInflater.from(context).inflate(layoutId, null, false)
-
+                dialog = Dialog(context, R.style.FullScreenDialog)
                 adLoadingView?.let {
                     dialog?.setContentView(it)
                     val layoutParams = WindowManager.LayoutParams()
