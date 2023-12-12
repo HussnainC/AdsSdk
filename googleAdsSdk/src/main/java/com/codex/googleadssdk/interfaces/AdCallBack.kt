@@ -7,4 +7,7 @@ abstract class AdCallBack {
     open fun onAdClick() {}
     open fun onAdDismiss() {}
     open fun onAdFailToShow(error: Exception) {}
+
+
+
 }

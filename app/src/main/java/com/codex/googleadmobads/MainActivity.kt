@@ -15,6 +15,7 @@ import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.nativeAds.NativeAdsUtil
 import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.utils.showLog
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var nativeAdsUtil: NativeAdsUtil
@@ -29,33 +30,70 @@ class MainActivity : AppCompatActivity() {
         // loadNative()
         loadBanner()
 
+//        findViewById<Button>(R.id.btnInterstitial).setOnClickListener {
+//            CodecxAd.showGoogleInterstitial(showLoadingLayout = true,
+//                adId = getString(R.string.testInterstitialAdId),
+//                adAllowed = true,
+//                activity = this,
+//                startTimer = true, timerMilliSec = 5000L,
+//                adCallBack = object : AdCallBack() {
+//                    override fun onAdLoaded() {
+//                        "asdpan".showLog("Ad Loaded")
+//                    }
+//
+//                    override fun onAdDismiss() {
+//                        super.onAdDismiss()
+//                        "asdpan".showLog("Ad Dismiss")
+//                    }
+//
+//                    override fun onAdFailToLoad(error: Exception) {
+//                        super.onAdFailToLoad(error)
+//                        "asdpan".showLog("Fail to show ${error.message}")
+//                    }
+//
+//                    override fun onAdShown() {
+//                        super.onAdShown()
+//                        "asdpan".showLog("Ad Visible")
+//                    }
+//                })
+//        }
         findViewById<Button>(R.id.btnInterstitial).setOnClickListener {
-            CodecxAd.showGoogleInterstitial(showLoadingLayout = true,
-                adId = getString(R.string.testInterstitialAdId),
-                adAllowed = true,
+            CodecxAd.showOpenOrInterstitialAd(
+                getString(R.string.testOpenAdId),
+                getString(R.string.testInterstitialAdId),
+                openAdAllowed = true,
+                interAdAllowed = true,
                 activity = this,
-                startTimer = true, timerMilliSec = 5000L,
                 adCallBack = object : AdCallBack() {
-                    override fun onAdLoaded() {
-                        "asdpan".showLog("Ad Loaded")
-                    }
-
                     override fun onAdDismiss() {
                         super.onAdDismiss()
-                        "asdpan".showLog("Ad Dismiss")
-                    }
-
-                    override fun onAdFailToLoad(error: Exception) {
-                        super.onAdFailToLoad(error)
-                        "asdpan".showLog("Fail to show ${error.message}")
+                        Snackbar.make(window.decorView, "Ad close", Snackbar.LENGTH_SHORT).show()
                     }
 
                     override fun onAdShown() {
                         super.onAdShown()
-                        "asdpan".showLog("Ad Visible")
+                    }
+
+                    override fun onAdFailToLoad(error: Exception) {
+                        super.onAdFailToLoad(error)
+                        Snackbar.make(
+                            window.decorView,
+                            error.message.toString(),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    override fun onAdFailToShow(error: Exception) {
+                        super.onAdFailToShow(error)
+                        Snackbar.make(
+                            window.decorView,
+                            "Fail to show: ${error.message.toString()}",
+                            Snackbar.LENGTH_SHORT
+                        ).show()
                     }
                 })
         }
+
 
     }
 

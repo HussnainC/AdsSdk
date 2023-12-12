@@ -12,6 +12,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
+import com.codex.googleadssdk.openAd.OpenAdConfig.getAdRequest
+import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdLoading
+import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdShowing
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.google.android.gms.ads.AdError
@@ -33,8 +36,7 @@ class OpenApp(
 
     private var appOpenAd: AppOpenAd? = null
     private var currentActivity: Activity? = null
-    private var isOpenAdLoading: Boolean = false
-    private var isOpenAdShowing: Boolean = false
+
 
     init {
         try {
@@ -108,7 +110,7 @@ class OpenApp(
                     Log.d("", ex.message.toString())
                 }
             }
-        }else{
+        } else {
             LoadingUtils.dismissScreen()
         }
     }
@@ -122,12 +124,6 @@ class OpenApp(
             }
         }
 
-    }
-
-
-    @NotNull
-    private fun getAdRequest(): AdRequest {
-        return AdRequest.Builder().build()
     }
 
 
