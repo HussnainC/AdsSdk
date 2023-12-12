@@ -5,35 +5,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.R
-import com.codex.googleadssdk.dataclass.NativeAdDetail
-import com.codex.googleadssdk.enums.EnumAdType
+import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.isNetworkConnected
-import com.codex.googleadssdk.utils.showLog
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.VideoOptions
-import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 
-class NativeAdsUtil() {
+object NativeAdsUtil {
 
-    private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView, adType: EnumAdType) {
+    private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
         adView.apply {
-            mediaView = findViewById<MediaView>(R.id.ad_media)
+            mediaView = findViewById(R.id.ad_media)
             headlineView = findViewById(R.id.ad_headline)
             bodyView = findViewById(R.id.ad_body)
             callToActionView = findViewById(R.id.ad_call_to_action_new)
             iconView = findViewById(R.id.ad_app_icon)
-            // The headline and media content are guaranteed to be in every UnifiedNativeAd.
             (headlineView as TextView).text = nativeAd.headline
             nativeAd.mediaContent?.let {
                 mediaView?.mediaContent = it
@@ -42,13 +37,7 @@ class NativeAdsUtil() {
         nativeAd.body?.let { body ->
             adView.bodyView?.visibility = View.VISIBLE
             (adView.bodyView as TextView).text = body
-            if (adType == EnumAdType.Medium2) {
-                adView.findViewById<TextView>(R.id.ad_body_2).text = body
-            }
         } ?: run {
-            if (adType == EnumAdType.Medium2) {
-                adView.findViewById<TextView>(R.id.ad_body_2).visibility = View.INVISIBLE
-            }
             adView.bodyView?.visibility = View.INVISIBLE
         }
 
@@ -79,194 +68,26 @@ class NativeAdsUtil() {
         }
     }
 
-    private fun populateNativeAdViewSmall(
-        nativeAd: NativeAd,
-        adView: NativeAdView,
-        adType: EnumAdType
-    ) {
-        adView.apply {
-            headlineView = findViewById(R.id.ad_headline)
-            bodyView = findViewById(R.id.ad_body)
-            callToActionView = findViewById(R.id.ad_call_to_action_new)
-            iconView = findViewById(R.id.ad_app_icon)
-            (headlineView as TextView).apply {
-                text = nativeAd.headline
-                isSelected = true
-            }
-        }
-
-        nativeAd.body?.let { body ->
-            adView.bodyView?.visibility = View.VISIBLE
-            (adView.bodyView as TextView).text = body
-            if (adType == EnumAdType.Small2) {
-                adView.findViewById<TextView>(R.id.ad_body_2).text = body
-            }
-        } ?: run {
-            if (adType == EnumAdType.Small2) {
-                adView.findViewById<TextView>(R.id.ad_body_2).visibility = View.INVISIBLE
-            }
-            adView.bodyView?.visibility = View.INVISIBLE
-        }
-
-
-        nativeAd.callToAction?.let { callToAction ->
-            adView.callToActionView?.visibility = View.VISIBLE
-            (adView.callToActionView as Button).text = callToAction
-        } ?: run {
-            adView.callToActionView?.visibility = View.INVISIBLE
-        }
-
-        nativeAd.icon?.let {
-            adView.iconView?.visibility = View.VISIBLE
-            (adView.iconView as ImageView).setImageDrawable(it.drawable)
-        } ?: run {
-            adView.iconView?.visibility = View.INVISIBLE
-        }
-        adView.setNativeAd(nativeAd)
-
-    }
-
-    var nativeAdCount = 0
-    fun loadNativeAd(
-        isAdAllowed: Boolean,
-        adFrame: FrameLayout,
-        adType: EnumAdType,
-        nativeId: String, activity: Activity
-    ) {
-        if (isAdAllowed) {
-            if (activity.isNetworkConnected()) {
-                adFrame.beVisible()
-                var shimmerView: ShimmerFrameLayout? = null
-                if (adType == EnumAdType.Small)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_small_native_ad_view,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Small2)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_small_2,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Small3)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_small_3,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Large)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Medium) {
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_medium,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                } else if (adType == EnumAdType.Medium2) {
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_medium_2,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                }
-
-                adFrame.addView(shimmerView)
-                adFrame.tag = 1
-                val layoutRes = if (adType == EnumAdType.Small) {
-                    R.layout.small_native_ad_view
-                } else if (adType == EnumAdType.Small2) {
-                    R.layout.native_ad_view_small_2
-                } else if (adType == EnumAdType.Small3) {
-                    R.layout.native_ad_view_small_3
-                } else if (adType == EnumAdType.Large) {
-                    R.layout.native_ad_view
-                } else if (adType == EnumAdType.Medium) {
-                    R.layout.native_ad_view_medium
-                } else
-                    R.layout.native_ad_view_medium_2
-
-                val builder = AdLoader.Builder(activity, nativeId)
-                builder.forNativeAd { nativeAd ->
-                    val adView =
-                        LayoutInflater.from(activity)
-                            .inflate(layoutRes, null, false) as NativeAdView
-                    if (adType == EnumAdType.Small || adType == EnumAdType.Small2 || adType == EnumAdType.Small3)
-                        populateNativeAdViewSmall(nativeAd, adView, adType)
-                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
-                        populateNativeAdView(nativeAd, adView, adType)
-                    adFrame.removeAllViews()
-
-                    adFrame.addView(adView)
-                }
-
-                val videoOptions = VideoOptions.Builder()
-                    .setStartMuted(true)
-                    .build()
-
-                val adOptions = NativeAdOptions.Builder()
-                    .setVideoOptions(videoOptions)
-                    .build()
-
-                builder.withNativeAdOptions(adOptions)
-
-                val adLoader = builder.withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        adFrame.removeAllViews()
-                        adFrame.beGone()
-                    }
-                }).build()
-                adLoader.loadAd(AdRequest.Builder().build())
-
-            } else {
-                adFrame.beGone()
-                if (adFrame.childCount != 0) {
-                    adFrame.removeAllViews()
-                }
-            }
-        } else {
-            adFrame.beGone()
-            if (adFrame.childCount != 0) {
-                adFrame.removeAllViews()
-            }
-        }
-
-
-    }
-
 
     fun loadNativeAd(
         isAdAllowed: Boolean,
-        placeHolderLayoutId: Int,
-        nativeAdView: Int,
+        @LayoutRes loadingAdView: Int,
         adContainerView: ViewGroup,
-        nativeId: String, context: Activity, adListener: NativeAdListener
+        nativeId: String, context: Activity, adListener: AdCallBack? = null
     ) {
         if (isAdAllowed) {
             if (context.isNetworkConnected()) {
-                val shimmerLayout =
-                    LayoutInflater.from(context).inflate(placeHolderLayoutId, null, false)
-                val adView =
-                    LayoutInflater.from(context).inflate(nativeAdView, null, false)
+                val loadingView = LayoutInflater.from(context).inflate(loadingAdView, null, false)
                 adContainerView.removeAllViews()
+                adContainerView.addView(loadingView)
 
-                adContainerView.addView(shimmerLayout)
                 val adLoader = AdLoader.Builder(context, nativeId)
                     .forNativeAd { nativeAd ->
-                        val detail = NativeAdDetail(nativeAd)
-                        adContainerView.removeAllViews()
-                        adContainerView.addView(adView)
-                        adListener.onAdLoad(
-                            detail, adView
-                        )
+                        adListener?.onNativeAdLoad(nativeAd)
                     }
                     .withAdListener(object : AdListener() {
                         override fun onAdFailedToLoad(adError: LoadAdError) {
-                            adListener.onFailToLoad(adError.message)
+                            adListener?.onAdFailToLoad(Exception(adError.message))
                         }
                     })
                     .withNativeAdOptions(
@@ -278,144 +99,129 @@ class NativeAdsUtil() {
                 adLoader.loadAd(AdRequest.Builder().build())
             } else {
                 adContainerView.removeAllViews()
+                adListener?.onAdFailToShow(Exception("Internet not connected"))
             }
         } else {
             adContainerView.removeAllViews()
+            adListener?.onAdFailToShow(Exception("Ad not allowed"))
         }
     }
 
     fun loadNativeAd(
         isAdAllowed: Boolean,
-        adFrame: FrameLayout,
-        adType: EnumAdType,
-        nativeId: List<String>, activity: Activity
+        nativeId: String, context: Activity, adListener: AdCallBack? = null
     ) {
         if (isAdAllowed) {
-            if (activity.isNetworkConnected()) {
-                adFrame.beVisible()
-                var shimmerView: ShimmerFrameLayout? = null
-                if (adType == EnumAdType.Small)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_small_native_ad_view,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Small2)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_small_2,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Small3)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_small_3,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Large)
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                else if (adType == EnumAdType.Medium) {
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_medium,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                } else if (adType == EnumAdType.Medium2) {
-                    shimmerView = LayoutInflater.from(activity).inflate(
-                        R.layout.shimmer_native_ad_view_medium_2,
-                        null,
-                        false
-                    ) as ShimmerFrameLayout
-                }
-
-                adFrame.addView(shimmerView)
-                adFrame.tag = 1
-                val layoutRes = if (adType == EnumAdType.Small) {
-                    R.layout.small_native_ad_view
-                } else if (adType == EnumAdType.Small2) {
-                    R.layout.native_ad_view_small_2
-                } else if (adType == EnumAdType.Small3) {
-                    R.layout.native_ad_view_small_3
-                } else if (adType == EnumAdType.Large) {
-                    R.layout.native_ad_view
-                } else if (adType == EnumAdType.Medium) {
-                    R.layout.native_ad_view_medium
-                } else
-                    R.layout.native_ad_view_medium_2
-
-                val builder = AdLoader.Builder(activity, nativeId[nativeAdCount])
-                builder.forNativeAd { nativeAd ->
-                    val adView =
-                        LayoutInflater.from(activity)
-                            .inflate(layoutRes, null, false) as NativeAdView
-                    if (adType == EnumAdType.Small || adType == EnumAdType.Small2 || adType == EnumAdType.Small3)
-                        populateNativeAdViewSmall(nativeAd, adView, adType)
-                    else if (adType == EnumAdType.Large || adType == EnumAdType.Medium || adType == EnumAdType.Medium2)
-                        populateNativeAdView(nativeAd, adView, adType)
-                    adFrame.removeAllViews()
-
-                    adFrame.addView(adView)
-                }
-
-                val videoOptions = VideoOptions.Builder()
-                    .setStartMuted(true)
-                    .build()
-
-                val adOptions = NativeAdOptions.Builder()
-                    .setVideoOptions(videoOptions)
-                    .build()
-
-                builder.withNativeAdOptions(adOptions)
-
-                val adLoader = builder.withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        nativeAdCount++
-                        if (nativeAdCount < nativeId.size) {
-                            loadNativeAd(isAdAllowed, adFrame, adType, nativeId, activity)
-                        } else {
-                            nativeAdCount = 0
-                            adFrame.removeAllViews()
+            if (context.isNetworkConnected()) {
+                val adLoader = AdLoader.Builder(context, nativeId)
+                    .forNativeAd { nativeAd ->
+                        adListener?.onNativeAdLoad(nativeAd)
+                    }
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(adError: LoadAdError) {
+                            adListener?.onAdFailToLoad(Exception(adError.message))
                         }
-
-                    }
-
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        "nativeAds".showLog("loaded at $nativeId")
-                        nativeAdCount = 0
-                    }
-                }).build()
-
+                    })
+                    .withNativeAdOptions(
+                        NativeAdOptions.Builder()
+                            .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build())
+                            .build()
+                    )
+                    .build()
                 adLoader.loadAd(AdRequest.Builder().build())
+            } else {
+                adListener?.onAdFailToShow(Exception("Internet not connected"))
             }
         } else {
-            adFrame.removeAllViews()
+            adListener?.onAdFailToShow(Exception("Ad not allowed"))
+        }
+    }
+
+    fun populateNativeAd(
+        context: Activity,
+        adContainerView: ViewGroup,
+        nativeAd: NativeAd, @LayoutRes nativeAdView: Int, adListener: AdCallBack?
+    ) {
+        adContainerView.removeAllViews()
+        val nativeView = LayoutInflater.from(context).inflate(nativeAdView, null, false)
+        if (nativeView is NativeAdView) {
+            adListener?.onAdShown()
+            populateNativeAdView(nativeAd, nativeView)
+        } else {
+            adListener?.onAdFailToShow(Exception("Type not match"))
         }
 
+    }
+
+    fun populateNativeAd(
+        isAdAllowed: Boolean,
+        @LayoutRes loadingAdView: Int,
+        @LayoutRes nativeAdView: Int,
+        adContainerView: ViewGroup,
+        nativeId: String,
+        context: Activity,
+        adListener: AdCallBack? = null
+    ) {
+        loadNativeAd(
+            isAdAllowed,
+            loadingAdView,
+            adContainerView,
+            nativeId,
+            context,
+            object : AdCallBack() {
+                override fun onNativeAdLoad(nativeAd: NativeAd) {
+                    super.onNativeAdLoad(nativeAd)
+                    adListener?.onNativeAdLoad(nativeAd)
+                    populateNativeAd(context, adContainerView, nativeAd, nativeAdView, adListener)
+                }
+
+                override fun onAdFailToLoad(error: Exception) {
+                    super.onAdFailToLoad(error)
+                    adListener?.onAdFailToLoad(error)
+                }
+
+                override fun onAdFailToShow(error: Exception) {
+                    super.onAdFailToShow(error)
+                    adListener?.onAdFailToShow(error)
+                }
+            }
+        )
 
     }
 
-    private fun View.beGone() {
-        this.visibility = View.GONE
+    fun populateNativeAd(
+        isAdAllowed: Boolean,
+        @LayoutRes nativeAdView: Int,
+        adContainerView: ViewGroup,
+        nativeId: String,
+        context: Activity,
+        adCallBack: AdCallBack?
+    ) {
+        loadNativeAd(
+            isAdAllowed,
+            nativeId,
+            context,
+            object : AdCallBack() {
+                override fun onNativeAdLoad(nativeAd: NativeAd) {
+                    super.onNativeAdLoad(nativeAd)
+                    adCallBack?.onNativeAdLoad(nativeAd)
+                    populateNativeAd(context, adContainerView, nativeAd, nativeAdView, adCallBack)
+                }
+
+                override fun onAdFailToLoad(error: Exception) {
+                    super.onAdFailToLoad(error)
+                    adCallBack?.onAdFailToLoad(error)
+                }
+
+                override fun onAdFailToShow(error: Exception) {
+                    super.onAdFailToShow(error)
+                    adCallBack?.onAdFailToShow(error)
+                }
+            }
+        )
+
     }
 
-    private fun View.beInvisible() {
-        this.visibility = View.INVISIBLE
-    }
-
-
-    private fun View.beVisible() {
-        this.visibility = View.VISIBLE
-    }
-
-    interface NativeAdListener {
-        fun onAdLoad(nativeAd: NativeAdDetail, nativeAdView: View)
-        fun onFailToLoad(message: String)
-    }
 
 }
 

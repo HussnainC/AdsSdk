@@ -1,16 +1,11 @@
 package com.codex.googleadmobads
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.codex.googleadssdk.adViews.BannerAdView
+import com.codex.googleadssdk.adViews.CodecxNativeAdView
 import com.codex.googleadssdk.ads.CodecxAd
-import com.codex.googleadssdk.bannerAds.BannerAd
-import com.codex.googleadssdk.dataclass.NativeAdDetail
-import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.nativeAds.NativeAdsUtil
 import com.codex.googleadssdk.openAd.OpenAdConfig
@@ -18,7 +13,6 @@ import com.codex.googleadssdk.utils.showLog
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var nativeAdsUtil: NativeAdsUtil
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 })
         }
 
-
+        loadNative()
     }
 
     private fun loadBanner() {
@@ -109,31 +103,48 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadNative() {
-        nativeAdsUtil.loadNativeAd(
-            true,
-            R.layout.placeholder,
-            R.layout.native_ad,
-            findViewById(R.id.nativeAdLayout),
+        findViewById<CodecxNativeAdView>(R.id.nativeAdLayout).populateNativeAd(
             getString(R.string.nativeTestAd),
-            this,
-            object : NativeAdsUtil.NativeAdListener {
-                override fun onAdLoad(
-                    nativeAd: NativeAdDetail,
-                    nativeAdView: View
-                ) {
-
+            this, object : AdCallBack() {
+                override fun onAdFailToShow(error: Exception) {
+                    super.onAdFailToShow(error)
+                    Snackbar.make(
+                        window.decorView,
+                        "Native fail to show : ${error.message.toString()}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
 
-                override fun onFailToLoad(message: String) {
-                    Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
+                override fun onAdFailToLoad(error: Exception) {
+                    super.onAdFailToLoad(error)
+                    Snackbar.make(
+                        window.decorView,
+                        "Native fail to load : ${error.message.toString()}",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
 
+                override fun onAdShown() {
+                    super.onAdShown()
+                    Snackbar.make(
+                        window.decorView,
+                        "Ad Showed Successful",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    Snackbar.make(
+                        window.decorView,
+                        "Ad Load Successful",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
             }
         )
     }
 
     private fun initAds() {
-        nativeAdsUtil = NativeAdsUtil()
 
     }
 }

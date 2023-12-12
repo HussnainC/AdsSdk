@@ -3,5 +3,9 @@
     <declare-styleable name="BannerAdView">
         <attr name="loadingView" format="reference" />
     </declare-styleable>
+    <declare-styleable name="CodecxNativeAdView">
+        <attr name="c_loadingView" format="reference" />
+        <attr name="c_contentAdView" format="reference" />
+    </declare-styleable>
 
 </resources>
