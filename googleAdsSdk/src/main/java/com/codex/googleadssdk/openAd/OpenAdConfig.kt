@@ -2,6 +2,7 @@ package com.codex.googleadssdk.openAd
 
 import android.app.Activity
 import android.util.Log
+import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.LoadingUtils

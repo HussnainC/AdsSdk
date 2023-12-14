@@ -23,7 +23,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+<com.codex.googleadssdk.adViews.BannerAdView
+    android:layout_width="match_parent"
+    android:id="@+id/bannerAdView"
+    app:loadingView="@layout/loading_banner_layout"
+    android:layout_height="wrap_content"/>
     <com.codex.googleadssdk.adViews.CodecxNativeAdView
         android:id="@+id/nativeAdLayout"
         android:layout_width="match_parent"

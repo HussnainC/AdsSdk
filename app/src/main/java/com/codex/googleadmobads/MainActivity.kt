@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.codex.googleadssdk.adViews.BannerAdView
 import com.codex.googleadssdk.adViews.CodecxNativeAdView
 import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initAds()
-        OpenAdConfig.enableResumeAd()
+        OpenAdConfig.disableResumeAd()
 
         // loadNative()
         loadBanner()

@@ -1,7 +1,7 @@
 package com.codex.googleadssdk.ads
 
 import android.app.Activity
-import android.app.ActivityManager
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -13,8 +13,34 @@ import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
+
 
 object CodecxAd {
+
+    private var adConfig: CodecxAdsConfig? = null
+
+    fun getAdConfig(): CodecxAdsConfig? {
+        return this.adConfig
+    }
+
+    fun initAds(adsConfig: CodecxAdsConfig, context: Context) {
+        this.adConfig = adsConfig
+        if (adsConfig.isDebugged) {
+            val requestConfiguration = if (adsConfig.testDevices.isNotEmpty()) {
+                adsConfig.testDevices.toMutableList().add(AdRequest.DEVICE_ID_EMULATOR)
+                RequestConfiguration.Builder()
+                    .setTestDeviceIds(adsConfig.testDevices).build()
+            } else {
+                RequestConfiguration.Builder()
+                    .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR)).build()
+            }
+            MobileAds.setRequestConfiguration(requestConfiguration)
+        }
+        MobileAds.initialize(context)
+    }
 
     fun showGoogleInterstitial(
         adId: String,
