@@ -42,6 +42,8 @@ object CodecxAd {
         MobileAds.initialize(context)
     }
 
+
+
     fun showGoogleInterstitial(
         adId: String,
         adAllowed: Boolean,
