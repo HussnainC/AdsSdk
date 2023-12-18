@@ -2,6 +2,7 @@ package com.codex.googleadssdk.GDPR
 
 import android.app.Activity
 import com.google.android.ump.ConsentDebugSettings
+import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 
@@ -32,7 +33,11 @@ object UMPConsent {
             activity,
             params,
             {
-                listener.onRequest(consentInformation.canRequestAds())
+                UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                    activity
+                ) {
+                    listener.onRequest(consentInformation.canRequestAds())
+                }
             },
             {
                 listener.onRequest(false)
