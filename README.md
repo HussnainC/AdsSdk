@@ -21,7 +21,7 @@
 	    /*Test app_Id="ca-app-pub-3940256099942544~3347511713" */
             android:value="@string/app_id" />
 
-#Show UMP Message form
+# Show UMP Message form
 	       
 	 UMPConsent.requestForUMP(
            activity = this,
@@ -36,7 +36,7 @@
 
             })
 
-#Both Open and Interstitial Ad show if any ad load
+# Both Open and Interstitial Ad show if any ad load
 
 	CodecxAd.showOpenOrInterstitialAd(openAdId ,
                 interAdId,
