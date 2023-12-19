@@ -14,6 +14,7 @@ object UMPConsent {
         deviceHashId: String = "B3EEABB8EE11C2BE770B684D95219ECB", listener: UMPRequestListener
     ) {
         val debugSettings = ConsentDebugSettings.Builder(activity)
+            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
             .addTestDeviceHashedId(deviceHashId)
             .build()
 
