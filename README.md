@@ -7,12 +7,12 @@
 	} 
 # Implementation Gradle Groovy
     dependencies {
-		implementation 'com.github.HussnainC:AdsSdk:v1.2.1'
+		implementation 'com.github.HussnainC:AdsSdk:v1.2.6'
 	  }
 
 # Implementation Gradle Kotlin
     dependencies {
-		implementation("com.github.HussnainC:AdsSdk:v1.2.1")
+		implementation("com.github.HussnainC:AdsSdk:v1.2.6")
 	  }
 
 # Android Manifest
@@ -21,6 +21,20 @@
 	    /*Test app_Id="ca-app-pub-3940256099942544~3347511713" */
             android:value="@string/app_id" />
 
+#Show UMP Message form
+	       
+	 UMPConsent.requestForUMP(
+           activity = this,
+            debuge = true, //for test mode
+            deviceHashId = "4A8FC7E40BF382E55A6D04A6965BB32F", //for test mode
+            object : UMPConsent.UMPRequestListener {
+                override fun onRequest(isAccepted: Boolean) {
+                    if (isAccepted) {
+                        initAds()
+                    }
+                }
+
+            })
 
 #Both Open and Interstitial Ad show if any ad load
 
