@@ -214,6 +214,9 @@ object InterstitialAdHelper {
 
                             override fun onAdFailedToLoad(p0: LoadAdError) {
                                 super.onAdFailedToLoad(p0)
+                                if (showLoadingLayout) {
+                                    LoadingUtils.dismissScreen()
+                                }
                                 isInterstitialLoading = false
                                 adCallBack.onAdFailToLoad(Exception(p0.message))
                             }
