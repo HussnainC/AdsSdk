@@ -7,7 +7,7 @@ import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 
 object UMPConsent {
-
+    var isUMPAllowed: Boolean = true
     fun requestForUMP(
         activity: Activity,
         enableTest: Boolean = false,
@@ -37,7 +37,8 @@ object UMPConsent {
                 UserMessagingPlatform.loadAndShowConsentFormIfRequired(
                     activity
                 ) {
-                    listener.onRequest(consentInformation.canRequestAds())
+                    isUMPAllowed = consentInformation.canRequestAds()
+                    listener.onRequest(isUMPAllowed)
                 }
             },
             {

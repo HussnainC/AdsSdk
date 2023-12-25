@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.isNetworkConnected
@@ -75,7 +76,7 @@ object NativeAdsUtil {
         adContainerView: ViewGroup,
         nativeId: String, context: Activity, adListener: AdCallBack? = null
     ) {
-        if (isAdAllowed) {
+        if (isAdAllowed && UMPConsent.isUMPAllowed) {
             if (context.isNetworkConnected()) {
                 val loadingView = LayoutInflater.from(context).inflate(loadingAdView, null, false)
                 adContainerView.removeAllViews()
@@ -111,7 +112,7 @@ object NativeAdsUtil {
         isAdAllowed: Boolean,
         nativeId: String, context: Activity, adListener: AdCallBack? = null
     ) {
-        if (isAdAllowed) {
+        if (isAdAllowed && UMPConsent.isUMPAllowed) {
             if (context.isNetworkConnected()) {
                 val adLoader = AdLoader.Builder(context, nativeId)
                     .forNativeAd { nativeAd ->
@@ -217,6 +218,7 @@ object NativeAdsUtil {
                 override fun onAdFailToShow(error: Exception) {
                     super.onAdFailToShow(error)
                     adCallBack?.onAdFailToShow(error)
+                    adContainerView.removeAllViews()
                 }
             }
         )

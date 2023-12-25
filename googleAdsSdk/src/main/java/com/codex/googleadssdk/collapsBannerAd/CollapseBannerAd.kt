@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.bannerAds.BannerAd
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -23,7 +24,7 @@ object CollapseBannerAd {
         adContainer: ViewGroup,
         unitId: String, adCallBack: AdCallBack
     ) {
-        if (isAdAllowed) {
+        if (isAdAllowed && UMPConsent.isUMPAllowed) {
             val extras = Bundle()
             extras.putString("collapsible", "bottom")
             val adRequest: AdRequest = AdRequest

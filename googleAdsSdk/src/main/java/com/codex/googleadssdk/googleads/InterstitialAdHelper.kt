@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.CountDownTimer
 import androidx.annotation.LayoutRes
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.LoadingUtils
@@ -155,7 +156,7 @@ object InterstitialAdHelper {
         loadingLayout: Int = R.layout.inter_ad_loading_layout,
         adCallBack: AdCallBack, activity: Activity
     ) {
-        if (adAllowed) {
+        if (adAllowed && UMPConsent.isUMPAllowed) {
             if (!timerAllowed) {
                 isTimerComplete = true
             }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -21,7 +22,7 @@ object BannerAd {
         unitId: String,
         context: Context, adCallBack: AdCallBack
     ) {
-        if (isAdAllowed) {
+        if (isAdAllowed && UMPConsent.isUMPAllowed) {
             val adView = AdView(context)
             adView.adUnitId = unitId
             adView.setAdSize(getAdSize(context))

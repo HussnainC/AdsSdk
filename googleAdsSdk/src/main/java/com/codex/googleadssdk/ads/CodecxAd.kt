@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.bannerAds.BannerAd
 import com.codex.googleadssdk.collapsBannerAd.CollapseBannerAd
@@ -41,7 +42,6 @@ object CodecxAd {
         }
         MobileAds.initialize(context)
     }
-
 
 
     fun showGoogleInterstitial(
@@ -193,7 +193,7 @@ object CodecxAd {
         if (!activity.isNetworkConnected()) {
             adCallBack.onAdDismiss()
         } else {
-            if (openAdAllowed || interAdAllowed) {
+            if ((openAdAllowed || interAdAllowed) && UMPConsent.isUMPAllowed) {
                 LoadingUtils.showAdLoadingScreen(activity, R.layout.inter_ad_loading_layout)
             } else {
                 adCallBack.onAdDismiss()
@@ -255,7 +255,8 @@ object CodecxAd {
 
                     }
                 })
-            } else {
+            }
+            else {
                 showGoogleInterstitial(
                     interAdId,
                     interAdAllowed,

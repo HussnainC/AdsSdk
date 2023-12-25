@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.openAd.OpenAdConfig.getAdRequest
@@ -119,7 +120,7 @@ class OpenApp(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onAppForegrounded() {
         currentActivity?.let {
-            if (OpenAdConfig.isAdEnable()) {
+            if (OpenAdConfig.isAdEnable() && UMPConsent.isUMPAllowed) {
                 fetchAd()
             }
         }
