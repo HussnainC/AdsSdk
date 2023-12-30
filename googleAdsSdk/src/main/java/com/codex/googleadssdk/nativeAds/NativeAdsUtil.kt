@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.GDPR.UMPConsent
@@ -28,12 +29,23 @@ object NativeAdsUtil {
             mediaView = findViewById(R.id.ad_media)
             headlineView = findViewById(R.id.ad_headline)
             bodyView = findViewById(R.id.ad_body)
+            try {
+                starRatingView = findViewById(R.id.ad_stars)
+            } catch (ex: Exception) {
+                //
+            }
             callToActionView = findViewById(R.id.ad_call_to_action_new)
             iconView = findViewById(R.id.ad_app_icon)
             (headlineView as TextView).text = nativeAd.headline
             nativeAd.mediaContent?.let {
                 mediaView?.mediaContent = it
             }
+        }
+        nativeAd.starRating?.let { ratings ->
+            adView.starRatingView?.visibility = View.VISIBLE
+            (adView.starRatingView as RatingBar).rating = ratings.toFloat()
+        } ?: run {
+            adView.starRatingView?.visibility = View.GONE
         }
         nativeAd.body?.let { body ->
             adView.bodyView?.visibility = View.VISIBLE
