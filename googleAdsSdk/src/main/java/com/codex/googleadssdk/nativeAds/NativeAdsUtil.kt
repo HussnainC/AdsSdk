@@ -43,7 +43,11 @@ object NativeAdsUtil {
         }
         nativeAd.starRating?.let { ratings ->
             adView.starRatingView?.visibility = View.VISIBLE
-            (adView.starRatingView as RatingBar).rating = ratings.toFloat()
+            if (adView.starRatingView != null) {
+                (adView.starRatingView as RatingBar).rating = ratings.toFloat()
+            } else {
+                adView.starRatingView?.visibility = View.GONE
+            }
         } ?: run {
             adView.starRatingView?.visibility = View.GONE
         }
