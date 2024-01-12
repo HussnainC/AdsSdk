@@ -7,12 +7,12 @@
 	} 
 # Implementation Gradle Groovy
     dependencies {
-		implementation 'com.github.HussnainC:AdsSdk:v1.2.9'
+		implementation 'com.github.HussnainC:AdsSdk:v1.3.0'
 	  }
 
 # Implementation Gradle Kotlin
     dependencies {
-		implementation("com.github.HussnainC:AdsSdk:v1.2.9")
+		implementation("com.github.HussnainC:AdsSdk:v1.3.0")
 	  }
 
 # Android Manifest
