@@ -9,6 +9,5 @@ class ApplicationClass : Application() {
     override fun onCreate() {
         super.onCreate()
         OpenApp(this, getString(R.string.testOpenAdId), true)
-
     }
 }

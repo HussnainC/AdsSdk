@@ -1,5 +1,6 @@
 package com.codex.googleadmobads
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.FrameLayout
@@ -7,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.codex.googleadssdk.adViews.BannerAdView
 import com.codex.googleadssdk.adViews.CodecxNativeAdView
 import com.codex.googleadssdk.ads.CodecxAd
+import com.codex.googleadssdk.ads.CodecxAdsConfig
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.nativeAds.NativeAdsUtil
 import com.codex.googleadssdk.openAd.OpenAdConfig
@@ -53,20 +55,15 @@ class MainActivity : AppCompatActivity() {
 //                })
 //        }
         findViewById<Button>(R.id.btnInterstitial).setOnClickListener {
-            CodecxAd.showOpenOrInterstitialAd(
-                getString(R.string.testOpenAdId),
+            CodecxAd.showGoogleInterstitial(
                 getString(R.string.testInterstitialAdId),
-                openAdAllowed = true,
-                interAdAllowed = true,
+                adAllowed = true,
+                showLoadingLayout = true,
                 activity = this,
                 adCallBack = object : AdCallBack() {
-                    override fun onAdDismiss() {
-                        super.onAdDismiss()
-                        Snackbar.make(window.decorView, "Ad close", Snackbar.LENGTH_SHORT).show()
-                    }
-
-                    override fun onAdShown() {
-                        super.onAdShown()
+                    override fun onNextMove() {
+                        super.onNextMove()
+                        startActivity(Intent(this@MainActivity, SecondActivity::class.java))
                     }
 
                     override fun onAdFailToLoad(error: Exception) {
@@ -133,6 +130,7 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     Snackbar.make(
@@ -146,6 +144,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initAds() {
-
+        CodecxAd.initAds(
+            CodecxAdsConfig.Builder().setIsDebugged(true).onNextInterstitial(true).build(), this
+        )
     }
 }

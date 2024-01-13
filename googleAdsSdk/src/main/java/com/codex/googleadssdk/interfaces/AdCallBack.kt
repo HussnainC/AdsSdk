@@ -12,5 +12,5 @@ abstract class AdCallBack {
     open fun onAdFailToShow(error: Exception) {}
     open fun onNativeAdLoad(nativeAd: NativeAd, adView: View) {}
     open fun onNativeAdLoad(nativeAd: NativeAd) {}
-
+    open fun onNextMove() {}
 }

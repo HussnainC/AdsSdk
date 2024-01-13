@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
+import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
@@ -69,6 +70,9 @@ object InterstitialAdHelper {
                     override fun onAdDismissedFullScreenContent() {
                         super.onAdDismissedFullScreenContent()
                         isInterstitialShowing = false
+                        if (CodecxAd.getAdConfig()?.showNext == true) {
+                            adCallBack.onNextMove()
+                        }
                         adCallBack.onAdDismiss()
                     }
 
@@ -110,7 +114,11 @@ object InterstitialAdHelper {
                         if (reloadOnDismiss) {
                             loadInterstitial(activity, adId)
                         }
+                        if (CodecxAd.getAdConfig()?.showNext == true) {
+                            adCallBack.onNextMove()
+                        }
                         adCallBack.onAdDismiss()
+
                     }
 
                     override fun onAdFailedToShowFullScreenContent(p0: AdError) {
@@ -175,6 +183,7 @@ object InterstitialAdHelper {
                                 interstitialAd = p0
                                 isInterstitialLoading = false
                                 adCallBack.onAdLoaded()
+                                interstitialAd?.show(activity)
                                 interstitialAd?.fullScreenContentCallback =
                                     object : FullScreenContentCallback() {
                                         override fun onAdDismissedFullScreenContent() {
@@ -183,7 +192,13 @@ object InterstitialAdHelper {
                                             if (timerAllowed) {
                                                 startTimer(timerMilliSec)
                                             }
+                                            if (CodecxAd.getAdConfig()?.showNext == true) {
+                                                adCallBack.onNextMove()
+                                            }
                                             adCallBack.onAdDismiss()
+                                            if (showLoadingLayout) {
+                                                LoadingUtils.dismissScreen()
+                                            }
                                         }
 
                                         override fun onAdFailedToShowFullScreenContent(p0: AdError) {
@@ -203,13 +218,12 @@ object InterstitialAdHelper {
                                         override fun onAdShowedFullScreenContent() {
                                             super.onAdShowedFullScreenContent()
                                             isInterstitialShowing = true
-                                            if (showLoadingLayout) {
-                                                LoadingUtils.dismissScreen()
-                                            }
+
+
                                             adCallBack.onAdShown()
+
                                         }
                                     }
-                                interstitialAd?.show(activity)
                             }
 
                             override fun onAdFailedToLoad(p0: LoadAdError) {
