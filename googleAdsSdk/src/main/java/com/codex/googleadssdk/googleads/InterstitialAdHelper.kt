@@ -196,17 +196,14 @@ object InterstitialAdHelper {
                                                 adCallBack.onNextMove()
                                             }
                                             adCallBack.onAdDismiss()
-                                            if (showLoadingLayout) {
-                                                LoadingUtils.dismissScreen()
-                                            }
+                                            LoadingUtils.dismissScreen()
+
                                         }
 
                                         override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                                             super.onAdFailedToShowFullScreenContent(p0)
                                             isInterstitialShowing = false
-                                            if (showLoadingLayout) {
-                                                LoadingUtils.dismissScreen()
-                                            }
+                                            LoadingUtils.dismissScreen()
                                             adCallBack.onAdFailToShow(Exception(p0.message))
                                         }
 
@@ -218,8 +215,6 @@ object InterstitialAdHelper {
                                         override fun onAdShowedFullScreenContent() {
                                             super.onAdShowedFullScreenContent()
                                             isInterstitialShowing = true
-
-
                                             adCallBack.onAdShown()
 
                                         }
@@ -228,9 +223,7 @@ object InterstitialAdHelper {
 
                             override fun onAdFailedToLoad(p0: LoadAdError) {
                                 super.onAdFailedToLoad(p0)
-                                if (showLoadingLayout) {
-                                    LoadingUtils.dismissScreen()
-                                }
+                                LoadingUtils.dismissScreen()
                                 isInterstitialLoading = false
                                 adCallBack.onAdFailToLoad(Exception(p0.message))
                             }
