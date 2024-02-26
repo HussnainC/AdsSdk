@@ -10,6 +10,7 @@ import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
+import com.codex.googleadssdk.yandaxAds.YandexInterstitial
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -19,14 +20,13 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 
 object InterstitialAdHelper {
-
     var isInterstitialShowing: Boolean = false
     var isInterstitialLoading: Boolean = false
 
-    private var isTimerComplete: Boolean = true
+    var isTimerComplete: Boolean = true
     private var interstitialAd: InterstitialAd? = null
     fun loadInterstitial(context: Context, adId: String) {
-        if (interstitialAd == null)
+        if (interstitialAd == null && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true)
             InterstitialAd.load(context, adId,
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
@@ -43,7 +43,7 @@ object InterstitialAdHelper {
     }
 
     fun loadInterstitial(context: Context, adId: String, adCallBack: AdCallBack) {
-        if (interstitialAd == null)
+        if (interstitialAd == null && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true)
             InterstitialAd.load(context, adId,
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
@@ -64,15 +64,13 @@ object InterstitialAdHelper {
     }
 
     fun showInterstitial(activity: Activity, adCallBack: AdCallBack) {
-        if (interstitialAd != null) {
+        if (interstitialAd != null && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true) {
             interstitialAd?.fullScreenContentCallback =
                 object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
                         super.onAdDismissedFullScreenContent()
                         isInterstitialShowing = false
-                        if (CodecxAd.getAdConfig()?.showNext == true) {
-                            adCallBack.onNextMove()
-                        }
+
                         adCallBack.onAdDismiss()
                     }
 
@@ -105,7 +103,7 @@ object InterstitialAdHelper {
         reloadOnDismiss: Boolean,
         adCallBack: AdCallBack
     ) {
-        if (interstitialAd != null) {
+        if (interstitialAd != null && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true) {
             interstitialAd?.fullScreenContentCallback =
                 object : FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
@@ -114,9 +112,7 @@ object InterstitialAdHelper {
                         if (reloadOnDismiss) {
                             loadInterstitial(activity, adId)
                         }
-                        if (CodecxAd.getAdConfig()?.showNext == true) {
-                            adCallBack.onNextMove()
-                        }
+
                         adCallBack.onAdDismiss()
 
                     }
@@ -155,7 +151,7 @@ object InterstitialAdHelper {
     }
 
     fun loadShowInterstitial(
-        adId: String,
+        adId: String?,
         adAllowed: Boolean,
         showLoadingLayout: Boolean = true,
         timerAllowed: Boolean = false,
@@ -164,84 +160,109 @@ object InterstitialAdHelper {
         loadingLayout: Int = R.layout.inter_ad_loading_layout,
         adCallBack: AdCallBack, activity: Activity
     ) {
-        if (adAllowed && UMPConsent.isUMPAllowed) {
-            if (!timerAllowed) {
-                isTimerComplete = true
-            }
-            if (isTimerComplete) {
-                if (activity.isNetworkConnected()) {
+        if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false) {
+            YandexInterstitial.loadShowInterstitial(
+                CodecxAd.getAdConfig()?.yandexAdIds?.interstitialId
+                    ?: activity.getString(R.string.yandexInterTestId),
+                adAllowed,
+                showLoadingLayout,
+                timerAllowed,
+                timerMilliSec,
+                loadingLayout,
+                adCallBack,
+                activity
+            )
+        } else {
+            if (adAllowed && UMPConsent.isUMPAllowed && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true) {
+                if (!timerAllowed) {
+                    isTimerComplete = true
+                }
+                if (isTimerComplete) {
+                    if (activity.isNetworkConnected()) {
+                        if (showLoadingLayout) {
+                            LoadingUtils.showAdLoadingScreen(activity, layoutId = loadingLayout)
+                        }
+                        isInterstitialLoading = true
+                        InterstitialAd.load(activity,
+                            adId ?: "ca-app-pub-3940256099942544/1033173712",
+                            AdRequest.Builder().build(),
+                            object : InterstitialAdLoadCallback() {
+                                override fun onAdLoaded(p0: InterstitialAd) {
+                                    super.onAdLoaded(p0)
+                                    interstitialAd = p0
+                                    isInterstitialLoading = false
+                                    adCallBack.onAdLoaded()
+                                    interstitialAd?.show(activity)
+                                    interstitialAd?.fullScreenContentCallback =
+                                        object : FullScreenContentCallback() {
+                                            override fun onAdDismissedFullScreenContent() {
+                                                super.onAdDismissedFullScreenContent()
+                                                isInterstitialShowing = false
+                                                if (timerAllowed) {
+                                                    startTimer(timerMilliSec)
+                                                }
+                                                adCallBack.onAdDismiss()
+                                                LoadingUtils.dismissScreen()
 
-                    if (showLoadingLayout) {
-                        LoadingUtils.showAdLoadingScreen(activity, layoutId = loadingLayout)
-                    }
-                    isInterstitialLoading = true
-                    InterstitialAd.load(activity, adId,
-                        AdRequest.Builder().build(),
-                        object : InterstitialAdLoadCallback() {
-                            override fun onAdLoaded(p0: InterstitialAd) {
-                                super.onAdLoaded(p0)
-                                interstitialAd = p0
-                                isInterstitialLoading = false
-                                adCallBack.onAdLoaded()
-                                interstitialAd?.show(activity)
-                                interstitialAd?.fullScreenContentCallback =
-                                    object : FullScreenContentCallback() {
-                                        override fun onAdDismissedFullScreenContent() {
-                                            super.onAdDismissedFullScreenContent()
-                                            isInterstitialShowing = false
-                                            if (timerAllowed) {
-                                                startTimer(timerMilliSec)
                                             }
-                                            if (CodecxAd.getAdConfig()?.showNext == true) {
-                                                adCallBack.onNextMove()
+
+                                            override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                                                super.onAdFailedToShowFullScreenContent(p0)
+                                                isInterstitialShowing = false
+                                                LoadingUtils.dismissScreen()
+                                                adCallBack.onAdFailToShow(Exception(p0.message))
                                             }
-                                            adCallBack.onAdDismiss()
-                                            LoadingUtils.dismissScreen()
 
+                                            override fun onAdClicked() {
+                                                super.onAdClicked()
+                                                adCallBack.onAdClick()
+                                            }
+
+                                            override fun onAdShowedFullScreenContent() {
+                                                super.onAdShowedFullScreenContent()
+                                                isInterstitialShowing = true
+                                                adCallBack.onAdShown()
+
+                                            }
                                         }
+                                }
 
-                                        override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                                            super.onAdFailedToShowFullScreenContent(p0)
-                                            isInterstitialShowing = false
-                                            LoadingUtils.dismissScreen()
-                                            adCallBack.onAdFailToShow(Exception(p0.message))
-                                        }
-
-                                        override fun onAdClicked() {
-                                            super.onAdClicked()
-                                            adCallBack.onAdClick()
-                                        }
-
-                                        override fun onAdShowedFullScreenContent() {
-                                            super.onAdShowedFullScreenContent()
-                                            isInterstitialShowing = true
-                                            adCallBack.onAdShown()
-
-                                        }
+                                override fun onAdFailedToLoad(p0: LoadAdError) {
+                                    super.onAdFailedToLoad(p0)
+                                    if (CodecxAd.getAdConfig()?.shouldShowYandexOnGoogleAdFail == true && CodecxAd.getAdConfig()?.isYandexAllowed == true) {
+                                        YandexInterstitial.loadShowInterstitial(
+                                            CodecxAd.getAdConfig()?.yandexAdIds?.interstitialId
+                                                ?: activity.getString(R.string.yandexInterTestId),
+                                            adAllowed,
+                                            showLoadingLayout,
+                                            timerAllowed,
+                                            timerMilliSec,
+                                            loadingLayout,
+                                            adCallBack,
+                                            activity
+                                        )
+                                    } else {
+                                        LoadingUtils.dismissScreen()
+                                        isInterstitialLoading = false
+                                        adCallBack.onAdFailToLoad(Exception(p0.message))
                                     }
-                            }
 
-                            override fun onAdFailedToLoad(p0: LoadAdError) {
-                                super.onAdFailedToLoad(p0)
-                                LoadingUtils.dismissScreen()
-                                isInterstitialLoading = false
-                                adCallBack.onAdFailToLoad(Exception(p0.message))
-                            }
-                        })
+                                }
+                            })
+                    } else {
+                        adCallBack.onAdFailToLoad(Exception("No internet found"))
+                    }
                 } else {
-                    adCallBack.onAdFailToLoad(Exception("No internet found"))
+                    adCallBack.onAdDismiss()
                 }
             } else {
                 adCallBack.onAdDismiss()
             }
-        } else {
-            adCallBack.onAdDismiss()
         }
-
 
     }
 
-    private fun startTimer(timerMilliSec: Long) {
+    fun startTimer(timerMilliSec: Long) {
         val timer = object : CountDownTimer(timerMilliSec, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (isTimerComplete)

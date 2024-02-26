@@ -11,8 +11,10 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
+import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.isNetworkConnected
+import com.codex.googleadssdk.yandaxAds.YandexNativeAd
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
@@ -21,6 +23,7 @@ import com.google.android.gms.ads.VideoOptions
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.yandex.mobile.ads.common.AdRequestError.Code
 
 object NativeAdsUtil {
 
@@ -176,68 +179,173 @@ object NativeAdsUtil {
         @LayoutRes loadingAdView: Int,
         @LayoutRes nativeAdView: Int,
         adContainerView: ViewGroup,
-        nativeId: String,
+        nativeId: String?,
         context: Activity,
         adListener: AdCallBack? = null
     ) {
-        loadNativeAd(
+        if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false) {
+            populateYandexNative(
+                isAdAllowed,
+                loadingAdView,
+                nativeAdView,
+                adContainerView,
+                context,
+                adListener
+            )
+        } else {
+            if (CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true) {
+                loadNativeAd(
+                    isAdAllowed,
+                    loadingAdView,
+                    adContainerView,
+                    nativeId ?: "ca-app-pub-3940256099942544/2247696110",
+                    context,
+                    object : AdCallBack() {
+                        override fun onNativeAdLoad(nativeAd: NativeAd) {
+                            super.onNativeAdLoad(nativeAd)
+                            adListener?.onNativeAdLoad(nativeAd)
+                            populateNativeAd(
+                                context,
+                                adContainerView,
+                                nativeAd,
+                                nativeAdView,
+                                adListener
+                            )
+                        }
+
+                        override fun onAdFailToLoad(error: Exception) {
+                            super.onAdFailToLoad(error)
+                            if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.shouldShowYandexOnGoogleAdFail == true) {
+                                populateYandexNative(
+                                    isAdAllowed,
+                                    loadingAdView,
+                                    nativeAdView,
+                                    adContainerView,
+                                    context,
+                                    adListener
+                                )
+                            } else {
+                                adListener?.onAdFailToLoad(error)
+                            }
+                        }
+
+                        override fun onAdFailToShow(error: Exception) {
+                            super.onAdFailToShow(error)
+                            adListener?.onAdFailToShow(error)
+                        }
+                    }
+                )
+            }
+        }
+
+
+    }
+
+    private fun populateYandexNative(
+        isAdAllowed: Boolean,
+        @LayoutRes loadingAdView: Int,
+        @LayoutRes nativeAdView: Int,
+        adContainerView: ViewGroup,
+        context: Activity,
+        adListener: AdCallBack? = null
+    ) {
+        YandexNativeAd.populateNativeAd(
             isAdAllowed,
             loadingAdView,
+            nativeAdView,
             adContainerView,
-            nativeId,
+            CodecxAd.getAdConfig()?.yandexAdIds?.nativeId
+                ?: context.getString(R.string.yandexNativeTestId),
             context,
-            object : AdCallBack() {
-                override fun onNativeAdLoad(nativeAd: NativeAd) {
-                    super.onNativeAdLoad(nativeAd)
-                    adListener?.onNativeAdLoad(nativeAd)
-                    populateNativeAd(context, adContainerView, nativeAd, nativeAdView, adListener)
+            object : YandexNativeAd.YandexNativeAdListener() {
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    adListener?.onAdLoaded()
+                }
+
+                override fun onAdShown() {
+                    super.onAdShown()
+                    adListener?.onAdShown()
+
                 }
 
                 override fun onAdFailToLoad(error: Exception) {
                     super.onAdFailToLoad(error)
                     adListener?.onAdFailToLoad(error)
+
                 }
 
                 override fun onAdFailToShow(error: Exception) {
                     super.onAdFailToShow(error)
                     adListener?.onAdFailToShow(error)
                 }
-            }
-        )
 
+            })
     }
 
     fun populateNativeAd(
         isAdAllowed: Boolean,
         @LayoutRes nativeAdView: Int,
         adContainerView: ViewGroup,
-        nativeId: String,
+        nativeId: String?,
         context: Activity,
         adCallBack: AdCallBack?
     ) {
-        loadNativeAd(
-            isAdAllowed,
-            nativeId,
-            context,
-            object : AdCallBack() {
-                override fun onNativeAdLoad(nativeAd: NativeAd) {
-                    super.onNativeAdLoad(nativeAd)
-                    adCallBack?.onNativeAdLoad(nativeAd)
-                    populateNativeAd(context, adContainerView, nativeAd, nativeAdView, adCallBack)
-                }
+        if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false) {
+            populateYandexNative(
+                isAdAllowed,
+                R.layout.shimmer_native_ad_view,
+                nativeAdView,
+                adContainerView,
+                context,
+                adCallBack
+            )
+        } else {
+            if (CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true) {
+                loadNativeAd(
+                    isAdAllowed,
+                    nativeId ?: "ca-app-pub-3940256099942544/2247696110",
+                    context,
+                    object : AdCallBack() {
+                        override fun onNativeAdLoad(nativeAd: NativeAd) {
+                            super.onNativeAdLoad(nativeAd)
+                            adCallBack?.onNativeAdLoad(nativeAd)
+                            populateNativeAd(
+                                context,
+                                adContainerView,
+                                nativeAd,
+                                nativeAdView,
+                                adCallBack
+                            )
+                        }
 
-                override fun onAdFailToLoad(error: Exception) {
-                    super.onAdFailToLoad(error)
-                    adCallBack?.onAdFailToLoad(error)
-                }
+                        override fun onAdFailToLoad(error: Exception) {
+                            super.onAdFailToLoad(error)
+                            if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.shouldShowYandexOnGoogleAdFail == true) {
+                                populateYandexNative(
+                                    isAdAllowed,
+                                    R.layout.shimmer_native_ad_view,
+                                    nativeAdView,
+                                    adContainerView,
+                                    context,
+                                    adCallBack
+                                )
+                            } else {
+                                adCallBack?.onAdFailToLoad(error)
+                            }
+                        }
 
-                override fun onAdFailToShow(error: Exception) {
-                    super.onAdFailToShow(error)
-                    adCallBack?.onAdFailToShow(error)
-                    adContainerView.removeAllViews()
-                }
+                        override fun onAdFailToShow(error: Exception) {
+                            super.onAdFailToShow(error)
+                            adCallBack?.onAdFailToShow(error)
+                            adContainerView.removeAllViews()
+                        }
+                    }
+                )
             }
-        )
+
+        }
+
 
     }
 

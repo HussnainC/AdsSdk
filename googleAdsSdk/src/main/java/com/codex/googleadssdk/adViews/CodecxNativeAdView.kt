@@ -29,7 +29,7 @@ class CodecxNativeAdView @JvmOverloads constructor(
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
-        orientation=LinearLayout.VERTICAL
+        orientation = LinearLayout.VERTICAL
         val loadingLayoutView = typedArray.getResourceId(
             R.styleable.CodecxNativeAdView_c_loadingView,
             R.layout.shimmer_native_ad_view_medium

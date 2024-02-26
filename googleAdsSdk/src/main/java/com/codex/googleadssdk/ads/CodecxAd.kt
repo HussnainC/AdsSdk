@@ -29,22 +29,25 @@ object CodecxAd {
 
     fun initAds(adsConfig: CodecxAdsConfig, context: Context) {
         this.adConfig = adsConfig
-        if (adsConfig.isDebugged) {
-            val requestConfiguration = if (adsConfig.testDevices.isNotEmpty()) {
-                adsConfig.testDevices.toMutableList().add(AdRequest.DEVICE_ID_EMULATOR)
-                RequestConfiguration.Builder()
-                    .setTestDeviceIds(adsConfig.testDevices).build()
-            } else {
-                RequestConfiguration.Builder()
-                    .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR)).build()
+        if (adsConfig.isGoogleAdsAllowed) {
+            if (adsConfig.isDebugged) {
+                val requestConfiguration = if (adsConfig.testDevices.isNotEmpty()) {
+                    adsConfig.testDevices.toMutableList().add(AdRequest.DEVICE_ID_EMULATOR)
+                    RequestConfiguration.Builder()
+                        .setTestDeviceIds(adsConfig.testDevices).build()
+                } else {
+                    RequestConfiguration.Builder()
+                        .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR)).build()
+                }
+                MobileAds.setRequestConfiguration(requestConfiguration)
             }
-            MobileAds.setRequestConfiguration(requestConfiguration)
+            MobileAds.initialize(context)
         }
-        MobileAds.initialize(context)
+
     }
 
 
-    fun showGoogleInterstitial(
+    fun showInterstitial(
         adId: String,
         adAllowed: Boolean,
         startTimer: Boolean,
@@ -67,7 +70,7 @@ object CodecxAd {
     }
 
 
-    fun showGoogleInterstitial(
+    fun showInterstitial(
         adId: String,
         adAllowed: Boolean,
         startTimer: Boolean,
@@ -87,7 +90,7 @@ object CodecxAd {
         )
     }
 
-    fun showGoogleInterstitial(
+    fun showInterstitial(
         adId: String,
         adAllowed: Boolean,
         showLoadingLayout: Boolean,
@@ -103,7 +106,7 @@ object CodecxAd {
         )
     }
 
-    fun showGoogleInterstitial(
+    fun showInterstitial(
         adId: String,
         adAllowed: Boolean,
         activity: Activity,
@@ -214,7 +217,7 @@ object CodecxAd {
                             adCallBack.onAdFailToLoad(error)
                             return
                         }
-                        showGoogleInterstitial(
+                        showInterstitial(
                             interAdId,
                             interAdAllowed,
                             startTimer = false,
@@ -255,9 +258,8 @@ object CodecxAd {
 
                     }
                 })
-            }
-            else {
-                showGoogleInterstitial(
+            } else {
+                showInterstitial(
                     interAdId,
                     interAdAllowed,
                     startTimer = false,

@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="loading_ad">Loading Ad...</string>
+    <string name="yandexInterTestId">demo-interstitial-yandex</string>
+    <string name="yandexBannerTestId">demo-banner-yandex</string>
+    <string name="yandexNativeTestId">demo-native-video-yandex</string>
 </resources>

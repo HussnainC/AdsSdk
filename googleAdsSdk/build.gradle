@@ -46,14 +46,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     //Google Ad's
-    implementation "com.google.android.gms:play-services-ads:22.2.0"
+    implementation "com.google.android.gms:play-services-ads:22.6.0"
     // GLIDE
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
-    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
-    implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
+  //  implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
+
+    implementation 'com.yandex.android:mobileads:5.10.0'
 
 }
 afterEvaluate {
@@ -63,7 +65,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.HussnainC'
                 artifactId = 'AdsSdk'
-                version = 'v1.3.2'
+                version = 'v1.3.3'
             }
         }
         repositories {

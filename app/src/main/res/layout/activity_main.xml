@@ -28,7 +28,7 @@
         android:id="@+id/nativeAdLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:c_contentAdView="@layout/native_ad_view_medium"
+        app:c_contentAdView="@layout/native_ad_view"
         app:c_loadingView="@layout/shimmer_native_ad_view_medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
