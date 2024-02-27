@@ -4,4 +4,5 @@
     <string name="yandexInterTestId">demo-interstitial-yandex</string>
     <string name="yandexBannerTestId">demo-banner-yandex</string>
     <string name="yandexNativeTestId">demo-native-video-yandex</string>
+    <string name="yandexOpenTestId">demo-appopenad-yandex</string>
 </resources>

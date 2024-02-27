@@ -16,8 +16,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        initAds()
-        OpenAdConfig.disableResumeAd()
+        OpenAdConfig.enableResumeAd()
 
         loadBanner()
 
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadNative() {
         findViewById<CodecxNativeAdView>(R.id.nativeAdLayout).populateNativeAd(
-           "ca-app-pub-3940256099942544/2247696110",
+            "ca-app-pub-3940256099942544/2247696110",
             this, object : AdCallBack() {
                 override fun onAdFailToShow(error: Exception) {
                     super.onAdFailToShow(error)
@@ -83,6 +82,7 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+
                 override fun onAdShown() {
                     super.onAdShown()
                     Snackbar.make(
@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
+
                 override fun onAdLoaded() {
                     super.onAdLoaded()
                     Snackbar.make(
@@ -103,12 +104,5 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    private fun initAds() {
-        CodecxAd.initAds(
-            CodecxAdsConfig.Builder().setIsDebugged(true)
-                .setIsYandexAllowed(true)
-                .setIsGoogleAdsAllowed(true)
-                .setShowYandexOnGoogleAdFail(true).onNextInterstitial(true).build(), this
-        )
-    }
+
 }

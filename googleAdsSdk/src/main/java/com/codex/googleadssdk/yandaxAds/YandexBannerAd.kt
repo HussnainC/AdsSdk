@@ -3,11 +3,12 @@ package com.codex.googleadssdk.yandaxAds
 import android.content.Context
 import android.view.ViewGroup
 import com.codex.googleadssdk.interfaces.AdCallBack
-import com.yandex.mobile.ads.banner.AdSize
 import com.yandex.mobile.ads.banner.BannerAdEventListener
+import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.AdRequest
 import com.yandex.mobile.ads.common.AdRequestError
+import com.yandex.mobile.ads.common.AdSize
 import com.yandex.mobile.ads.common.ImpressionData
 
 object YandexBannerAd {
@@ -54,15 +55,12 @@ object YandexBannerAd {
 
     }
 
-    private fun getAdSize(context: Context): AdSize {
+    private fun getAdSize(context: Context): BannerAdSize {
         val outMetrics = context.resources.displayMetrics
         val widthPixels = outMetrics.widthPixels.toFloat()
         val density = outMetrics.density
         val adWidth = (widthPixels / density).toInt()
-        return AdSize.stickySize(
-            context,
-            adWidth
-        )
+        return BannerAdSize.stickySize(context, adWidth)
     }
 
 

@@ -43,6 +43,10 @@ object CodecxAd {
             }
             MobileAds.initialize(context)
         }
+        if (adsConfig.isYandexAllowed) {
+            com.yandex.mobile.ads.common.MobileAds.initialize(context) {
+            }
+        }
 
     }
 
