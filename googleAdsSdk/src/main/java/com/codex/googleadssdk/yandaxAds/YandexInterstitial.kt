@@ -61,6 +61,7 @@ object YandexInterstitial {
                                     }
 
                                     override fun onAdDismissed() {
+                                        InterstitialAdHelper.isInterstitialShowing = false
                                         if (timerAllowed) {
                                             InterstitialAdHelper.startTimer(timerMilliSec)
                                         }
