@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadNative() {
         findViewById<CodecxNativeAdView>(R.id.nativeAdLayout).populateNativeAd(
-            "ca-app-pub-3940256099942544/2247696110",
+            getString(R.string.nativeTestAd),
             this, object : AdCallBack() {
                 override fun onAdFailToShow(error: Exception) {
                     super.onAdFailToShow(error)

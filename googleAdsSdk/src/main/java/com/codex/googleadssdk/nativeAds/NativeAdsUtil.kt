@@ -29,7 +29,9 @@ object NativeAdsUtil {
 
     private fun populateNativeAdView(nativeAd: NativeAd, adView: NativeAdView) {
         adView.apply {
-            mediaView = findViewById(R.id.ad_media)
+            if (findViewById<View>(R.id.ad_media) != null)
+                mediaView = findViewById(R.id.ad_media)
+            advertiserView = findViewById(R.id.ad_advertiser)
             headlineView = findViewById(R.id.ad_headline)
             bodyView = findViewById(R.id.ad_body)
             try {
@@ -61,6 +63,13 @@ object NativeAdsUtil {
             adView.bodyView?.visibility = View.INVISIBLE
         }
 
+        nativeAd.advertiser?.let { advertiser ->
+            adView.advertiserView?.visibility = View.VISIBLE
+            (adView.advertiserView as TextView).text = advertiser
+        } ?: run {
+            adView.advertiserView?.visibility = View.GONE
+        }
+
         nativeAd.callToAction?.let { callToAction ->
             adView.callToActionView?.visibility = View.VISIBLE
             (adView.callToActionView as Button).text = callToAction
@@ -78,14 +87,15 @@ object NativeAdsUtil {
         }
 
         adView.setNativeAd(nativeAd)
-
-        val vc = nativeAd.mediaContent?.videoController
-
-        vc?.apply {
-            if (hasVideoContent()) {
-                this.mute(true)
+        nativeAd.mediaContent?.let {
+            val vc = it.videoController
+            vc.apply {
+                if (hasVideoContent()) {
+                    this.mute(true)
+                }
             }
         }
+
     }
 
 
