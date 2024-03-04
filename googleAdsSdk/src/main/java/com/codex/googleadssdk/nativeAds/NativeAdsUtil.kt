@@ -122,7 +122,9 @@ object NativeAdsUtil {
                     })
                     .withNativeAdOptions(
                         NativeAdOptions.Builder()
-                            .setVideoOptions(VideoOptions.Builder().setStartMuted(true).build())
+                            .setRequestMultipleImages(true)
+                            .setAdChoicesPlacement(NativeAdOptions.ADCHOICES_TOP_RIGHT)
+                            .setRequestCustomMuteThisAd(true)
                             .build()
                     )
                     .build()
