@@ -31,11 +31,12 @@ object NativeAdsUtil {
         adView.apply {
             if (findViewById<View>(R.id.ad_media) != null)
                 mediaView = findViewById(R.id.ad_media)
-            advertiserView = findViewById(R.id.ad_advertiser)
             headlineView = findViewById(R.id.ad_headline)
             bodyView = findViewById(R.id.ad_body)
             try {
                 starRatingView = findViewById(R.id.ad_stars)
+                if (findViewById<View>(R.id.ad_advertiser) != null)
+                    advertiserView = findViewById(R.id.ad_advertiser)
             } catch (ex: Exception) {
                 //
             }
@@ -65,7 +66,9 @@ object NativeAdsUtil {
 
         nativeAd.advertiser?.let { advertiser ->
             adView.advertiserView?.visibility = View.VISIBLE
-            (adView.advertiserView as TextView).text = advertiser
+            if (adView.advertiserView != null) {
+                (adView.advertiserView as TextView).text = advertiser
+            }
         } ?: run {
             adView.advertiserView?.visibility = View.GONE
         }
