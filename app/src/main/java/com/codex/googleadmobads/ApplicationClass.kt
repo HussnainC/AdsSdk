@@ -15,9 +15,10 @@ class ApplicationClass : Application() {
     private fun initAds() {
         CodecxAd.initAds(
             CodecxAdsConfig.Builder().setIsDebugged(true)
-                .setIsYandexAllowed(true)
+                .setIsYandexAllowed(false)
                 .setIsGoogleAdsAllowed(true)
-                .setShowYandexOnGoogleAdFail(true).onNextInterstitial(true).build(), this
+                .setDisableResumeAdOnClick(true)
+                .setShowYandexOnGoogleAdFail(false).onNextInterstitial(true).build(), this
         )
     }
 }

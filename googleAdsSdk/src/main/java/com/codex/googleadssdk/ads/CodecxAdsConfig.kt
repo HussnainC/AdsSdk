@@ -24,6 +24,7 @@ class CodecxAdsConfig {
         fun setIsDebugged(isDebugged: Boolean) = apply {
             this@Builder.isDebugged = isDebugged
         }
+
         fun setDisableResumeAdOnClick(isDisableResumeAdOnClick: Boolean) = apply {
             this@Builder.isDisableResumeAdOnClick = isDisableResumeAdOnClick
         }
@@ -60,6 +61,7 @@ class CodecxAdsConfig {
                 this.shouldShowYandexOnGoogleAdFail = this@Builder.shouldShowYandexOnGoogleAdFail
                 this.testDevices = this@Builder.testDevices
                 this.yandexAdIds = this@Builder.yandexAdIds
+                this.isDisableResumeAdOnClick = this@Builder.isDisableResumeAdOnClick
             }
             return codecx
         }

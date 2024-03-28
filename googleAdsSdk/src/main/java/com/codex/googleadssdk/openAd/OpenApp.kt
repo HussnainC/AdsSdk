@@ -134,18 +134,21 @@ class OpenApp(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onAppForegrounded() {
+        if (isOpenAdStop) {
+            Log.d("asophda","True")
+            isOpenAdStop = false
+            return
+        }
+        Log.d("asophda","False")
         currentActivity?.let {
-            if (isOpenAdStop) {
-                isOpenAdStop = false
-                return
-            }
-            if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false && OpenAdConfig.isAdEnable() && !InterstitialAdHelper.isInterstitialLoading && !InterstitialAdHelper.isInterstitialShowing && !isOpenAdLoading && !isOpenAdShowing) {
+            if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false && OpenAdConfig.isAdEnable() && !InterstitialAdHelper.isInterstitialLoading && !InterstitialAdHelper.isInterstitialShowing && !isOpenAdLoading && !isOpenAdShowing && !isOpenAdStop) {
                 YandexOpenApp.loadYandexOpenAd(it, isLoadingViewVisible, loadingLayout)
             } else {
-                if (OpenAdConfig.isAdEnable() && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true && UMPConsent.isUMPAllowed) {
+                if (OpenAdConfig.isAdEnable() && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true && UMPConsent.isUMPAllowed && !isOpenAdStop) {
                     fetchAd()
                 }
             }
+
         }
 
     }
