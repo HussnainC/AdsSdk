@@ -3,9 +3,11 @@ package com.codex.googleadssdk.yandaxAds
 import android.app.Activity
 import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.R
+import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.googleads.InterstitialAdHelper.isTimerComplete
 import com.codex.googleadssdk.interfaces.AdCallBack
+import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.yandex.mobile.ads.common.AdError
@@ -70,6 +72,9 @@ object YandexInterstitial {
                                     }
 
                                     override fun onAdClicked() {
+                                        if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                                            OpenAdConfig.isOpenAdStop = true
+                                        }
                                     }
 
                                     override fun onAdImpression(p0: ImpressionData?) {

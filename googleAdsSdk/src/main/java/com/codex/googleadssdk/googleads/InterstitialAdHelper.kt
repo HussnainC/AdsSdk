@@ -8,6 +8,7 @@ import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
+import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.codex.googleadssdk.yandaxAds.YandexInterstitial
@@ -82,6 +83,9 @@ object InterstitialAdHelper {
 
                     override fun onAdClicked() {
                         super.onAdClicked()
+                        if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                            OpenAdConfig.isOpenAdStop = true
+                        }
                         adCallBack.onAdClick()
                     }
 
@@ -125,6 +129,9 @@ object InterstitialAdHelper {
 
                     override fun onAdClicked() {
                         super.onAdClicked()
+                        if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                            OpenAdConfig.isOpenAdStop = true
+                        }
                         adCallBack.onAdClick()
                     }
 
@@ -215,6 +222,9 @@ object InterstitialAdHelper {
 
                                             override fun onAdClicked() {
                                                 super.onAdClicked()
+                                                if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                                                    OpenAdConfig.isOpenAdStop = true
+                                                }
                                                 adCallBack.onAdClick()
                                             }
 

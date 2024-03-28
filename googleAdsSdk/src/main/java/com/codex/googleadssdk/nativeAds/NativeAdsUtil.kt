@@ -13,6 +13,7 @@ import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
+import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.codex.googleadssdk.yandaxAds.YandexNativeAd
 import com.google.android.gms.ads.AdListener
@@ -122,6 +123,11 @@ object NativeAdsUtil {
                         override fun onAdFailedToLoad(adError: LoadAdError) {
                             adListener?.onAdFailToLoad(Exception(adError.message))
                         }
+
+                        override fun onAdClicked() {
+                            super.onAdClicked()
+                            adListener?.onAdClick()
+                        }
                     })
                     .withNativeAdOptions(
                         NativeAdOptions.Builder()
@@ -155,6 +161,11 @@ object NativeAdsUtil {
                     .withAdListener(object : AdListener() {
                         override fun onAdFailedToLoad(adError: LoadAdError) {
                             adListener?.onAdFailToLoad(Exception(adError.message))
+                        }
+
+                        override fun onAdClicked() {
+                            super.onAdClicked()
+                            adListener?.onAdClick()
                         }
                     })
                     .withNativeAdOptions(
@@ -216,6 +227,13 @@ object NativeAdsUtil {
                     nativeId ?: "ca-app-pub-3940256099942544/2247696110",
                     context,
                     object : AdCallBack() {
+                        override fun onAdClick() {
+                            super.onAdClick()
+                            if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                                OpenAdConfig.isOpenAdStop = true
+                            }
+                        }
+
                         override fun onNativeAdLoad(nativeAd: NativeAd) {
                             super.onNativeAdLoad(nativeAd)
                             adListener?.onNativeAdLoad(nativeAd)
@@ -332,6 +350,13 @@ object NativeAdsUtil {
                                 nativeAdView,
                                 adCallBack
                             )
+                        }
+
+                        override fun onAdClick() {
+                            super.onAdClick()
+                            if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                                OpenAdConfig.isOpenAdStop = true
+                            }
                         }
 
                         override fun onAdFailToLoad(error: Exception) {

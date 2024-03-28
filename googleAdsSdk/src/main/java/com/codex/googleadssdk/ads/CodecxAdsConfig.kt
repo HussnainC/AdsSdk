@@ -9,18 +9,23 @@ class CodecxAdsConfig {
     var isYandexAllowed = false
     var isGoogleAdsAllowed: Boolean = false
     var shouldShowYandexOnGoogleAdFail = false
+    var isDisableResumeAdOnClick = false
 
     class Builder {
         private var testDevices: List<String> = listOf()
         private var isDebugged: Boolean = false
         private var isYandexAllowed: Boolean = false
         private var yandexAdIds: YandexIds = YandexIds()
+        private var isDisableResumeAdOnClick = false
 
         private var isGoogleAdsAllowed: Boolean = false
         private var shouldShowYandexOnGoogleAdFail: Boolean = false
         private var showNext: Boolean = false
         fun setIsDebugged(isDebugged: Boolean) = apply {
             this@Builder.isDebugged = isDebugged
+        }
+        fun setDisableResumeAdOnClick(isDisableResumeAdOnClick: Boolean) = apply {
+            this@Builder.isDisableResumeAdOnClick = isDisableResumeAdOnClick
         }
 
         fun setIsYandexAllowed(isYandexAllowed: Boolean) = apply {

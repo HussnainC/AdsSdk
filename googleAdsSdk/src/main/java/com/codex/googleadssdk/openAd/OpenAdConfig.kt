@@ -18,6 +18,7 @@ object OpenAdConfig {
     private var isOpenAdAllowed: Boolean = false
     var isOpenAdLoading: Boolean = false
     var isOpenAdShowing: Boolean = false
+    var isOpenAdStop: Boolean = false
     fun enableResumeAd() {
         isOpenAdAllowed = true
     }

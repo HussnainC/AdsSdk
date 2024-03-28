@@ -24,7 +24,6 @@ object RewardedAdHelper {
                     rewardedAd = null
                     listener.onFailToLoad("Ad not available.")
                 }
-
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
                     rewardedAd?.show(

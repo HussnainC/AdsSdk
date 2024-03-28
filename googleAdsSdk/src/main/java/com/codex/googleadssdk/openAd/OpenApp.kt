@@ -17,6 +17,7 @@ import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.openAd.OpenAdConfig.getAdRequest
 import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdLoading
 import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdShowing
+import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdStop
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
 import com.codex.googleadssdk.utils.showLog
@@ -134,12 +135,14 @@ class OpenApp(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onAppForegrounded() {
         currentActivity?.let {
+            if (isOpenAdStop) {
+                isOpenAdStop = false
+                return
+            }
             if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false && OpenAdConfig.isAdEnable() && !InterstitialAdHelper.isInterstitialLoading && !InterstitialAdHelper.isInterstitialShowing && !isOpenAdLoading && !isOpenAdShowing) {
-                "asdas".showLog("Yandex Enter")
                 YandexOpenApp.loadYandexOpenAd(it, isLoadingViewVisible, loadingLayout)
             } else {
                 if (OpenAdConfig.isAdEnable() && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true && UMPConsent.isUMPAllowed) {
-                    "asdas".showLog("Google Enter")
                     fetchAd()
                 }
             }

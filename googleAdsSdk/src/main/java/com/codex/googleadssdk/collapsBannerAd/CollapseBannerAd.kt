@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.codex.googleadssdk.GDPR.UMPConsent
+import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.bannerAds.BannerAd
 import com.codex.googleadssdk.interfaces.AdCallBack
+import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.google.ads.mediation.admob.AdMobAdapter
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -42,6 +44,12 @@ object CollapseBannerAd {
                     adContainer.addView(adView)
                 }
 
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                        OpenAdConfig.isOpenAdStop = true
+                    }
+                }
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
                     adCallBack.onAdFailToLoad(Exception(p0.message))

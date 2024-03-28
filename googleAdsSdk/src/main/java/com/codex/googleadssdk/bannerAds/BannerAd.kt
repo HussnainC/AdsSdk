@@ -8,6 +8,7 @@ import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
 import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
+import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.yandaxAds.YandexBannerAd
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -47,6 +48,12 @@ object BannerAd {
                         adContainer.addView(adView)
                     }
 
+                    override fun onAdClicked() {
+                        super.onAdClicked()
+                        if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
+                            OpenAdConfig.isOpenAdStop = true
+                        }
+                    }
                     override fun onAdFailedToLoad(p0: LoadAdError) {
                         super.onAdFailedToLoad(p0)
                         if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.shouldShowYandexOnGoogleAdFail == true) {
