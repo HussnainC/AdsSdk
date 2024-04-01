@@ -5,8 +5,11 @@ import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.WindowManager
 import com.codex.googleadssdk.R
+import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.showLog
+import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
@@ -14,7 +17,12 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 
 object RewardedAdHelper {
     private var dialog: Dialog? = null
-    fun showAd(activity: Activity, adId: String, listener: RewardedAdListener) {
+    fun showAd(
+        activity: Activity,
+        adId: String,
+        listener: RewardedAdListener,
+        adCallBack: AdCallBack? = null
+    ) {
         showAdLoadingScreen(activity)
         var rewardedAd: RewardedAd? = null
         RewardedAd.load(activity, adId,
@@ -24,8 +32,34 @@ object RewardedAdHelper {
                     rewardedAd = null
                     listener.onFailToLoad("Ad not available.")
                 }
+
                 override fun onAdLoaded(ad: RewardedAd) {
                     rewardedAd = ad
+                    if (adCallBack != null) {
+                        rewardedAd?.fullScreenContentCallback =
+                            object : FullScreenContentCallback() {
+                                override fun onAdClicked() {
+                                    super.onAdClicked()
+                                    adCallBack.onAdClick()
+                                }
+
+                                override fun onAdDismissedFullScreenContent() {
+                                    super.onAdDismissedFullScreenContent()
+                                    adCallBack.onAdDismiss()
+                                }
+
+                                override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                                    super.onAdFailedToShowFullScreenContent(p0)
+                                    adCallBack.onAdFailToShow(Exception(p0.message))
+                                }
+
+                                override fun onAdShowedFullScreenContent() {
+                                    super.onAdShowedFullScreenContent()
+                                    adCallBack.onAdShown()
+                                }
+
+                            }
+                    }
                     rewardedAd?.show(
                         activity
                     ) { rewardItem -> // Handle the reward.
@@ -33,7 +67,6 @@ object RewardedAdHelper {
                         dismissLoadingView()
                         listener.onRewardCollected()
                     }
-
                 }
             })
     }
