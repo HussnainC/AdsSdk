@@ -169,19 +169,16 @@ object CodecxAd {
                 }
 
                 override fun onAdShown() {
-                    TODO("Not yet implemented")
                 }
 
                 override fun onAdClick() {
-                    TODO("Not yet implemented")
                 }
 
                 override fun onAdDismiss() {
-                    TODO("Not yet implemented")
                 }
 
                 override fun onAdFailToShow(error: Exception) {
-                    TODO("Not yet implemented")
+                    
                 }
             })
         }
@@ -236,7 +233,7 @@ object CodecxAd {
                     }
 
                     override fun onAdFailToShow(error: Exception) {
-                        TODO("Not yet implemented")
+
                     }
                 })
 
@@ -261,7 +258,7 @@ object CodecxAd {
         job?.cancel()
         job = CoroutineScope(Dispatchers.Main).launch {
             try {
-                withTimeout(10_000) {
+                withTimeout(adConfig?.requestTimeOut?:10000L) {
                     if (!(openAdAllowed || interAdAllowed) || !UMPConsent.isUMPAllowed) {
                         adCallBack.onAdFailToShow(Exception("Ad not available"))
                         return@withTimeout
@@ -295,6 +292,7 @@ object CodecxAd {
                 Log.e("NetworkInfoD", "Exception: ${e.message}")
                 adCallBack.onAdFailToLoad(e)
             } finally {
+                adCallBack.onAdDismiss()
                 LoadingUtils.dismissScreen()
                 job?.cancel()
             }
