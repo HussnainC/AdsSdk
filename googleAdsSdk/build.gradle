@@ -55,7 +55,7 @@ dependencies {
 
   //  implementation 'com.google.android.ump:user-messaging-platform:2.1.0'
 
-    implementation 'com.yandex.android:mobileads:6.4.0'
+    implementation 'com.yandex.android:mobileads:7.11.0'
 
 }
 afterEvaluate {
