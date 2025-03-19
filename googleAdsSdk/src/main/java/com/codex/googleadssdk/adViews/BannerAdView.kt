@@ -31,14 +31,11 @@ class BannerAdView @JvmOverloads constructor(
     }
 
     fun loadAd(adAllowed: Boolean, adId: String) {
-        BannerAd.showBanner(adAllowed, this, adId, context, object : AdCallBack() {
-
-        })
+        BannerAd.showBanner(adAllowed, this, adId, context, null)
     }
 
     fun loadAd(adId: String) {
-        BannerAd.showBanner(true, this, adId, context, object : AdCallBack() {
-        })
+        BannerAd.showBanner(true, this, adId, context, null)
     }
 
     fun loadAd(adId: String, adCallBack: AdCallBack) {
@@ -50,7 +47,7 @@ class BannerAdView @JvmOverloads constructor(
     }
 
     fun loadCollapseBannerAd(adId: String, activity: Activity) {
-        CollapseBannerAd.loadCollapseBanner(activity, true, this, adId, object : AdCallBack() {})
+        CollapseBannerAd.loadCollapseBanner(activity, true, this, adId,null)
     }
 
     private fun addShimmerLayout(loadingLayoutView: Int) {

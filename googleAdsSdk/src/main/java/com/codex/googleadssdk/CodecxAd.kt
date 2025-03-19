@@ -1,12 +1,12 @@
-package com.codex.googleadssdk.ads
+package com.codex.googleadssdk
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.codex.googleadssdk.GDPR.UMPConsent
-import com.codex.googleadssdk.R
 import com.codex.googleadssdk.bannerAds.BannerAd
 import com.codex.googleadssdk.collapsBannerAd.CollapseBannerAd
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
@@ -17,6 +17,15 @@ import com.codex.googleadssdk.utils.isNetworkConnected
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeout
+import kotlin.coroutines.resume
 
 
 object CodecxAd {
@@ -24,13 +33,13 @@ object CodecxAd {
     private var adConfig: CodecxAdsConfig? = null
 
     fun getAdConfig(): CodecxAdsConfig? {
-        return this.adConfig
+        return adConfig
     }
 
     fun initAds(adsConfig: CodecxAdsConfig, context: Context) {
-        this.adConfig = adsConfig
+        adConfig = adsConfig
         if (adsConfig.isGoogleAdsAllowed) {
-            if (adsConfig.isDebugged) {
+            try {
                 val requestConfiguration = if (adsConfig.testDevices.isNotEmpty()) {
                     adsConfig.testDevices.toMutableList().add(AdRequest.DEVICE_ID_EMULATOR)
                     RequestConfiguration.Builder()
@@ -40,8 +49,10 @@ object CodecxAd {
                         .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR)).build()
                 }
                 MobileAds.setRequestConfiguration(requestConfiguration)
+                MobileAds.initialize(context)
+            } catch (ex: Exception) {
+                //
             }
-            MobileAds.initialize(context)
         }
         if (adsConfig.isYandexAllowed) {
             com.yandex.mobile.ads.common.MobileAds.initialize(context) {
@@ -149,7 +160,30 @@ object CodecxAd {
         adContainer.removeAllViews()
         if (activity.isNetworkConnected()) {
             adContainer.addView(LayoutInflater.from(activity).inflate(loadingLayout, null, false))
-            BannerAd.showBanner(adAllowed, adContainer, adId, activity, object : AdCallBack() {})
+            BannerAd.showBanner(adAllowed, adContainer, adId, activity, object : AdCallBack {
+                override fun onAdLoaded() {
+
+                }
+
+                override fun onAdFailToLoad(error: Exception) {
+                }
+
+                override fun onAdShown() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onAdClick() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onAdDismiss() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onAdFailToShow(error: Exception) {
+                    TODO("Not yet implemented")
+                }
+            })
         }
     }
 
@@ -184,10 +218,32 @@ object CodecxAd {
                 adAllowed,
                 adContainer,
                 adId,
-                object : AdCallBack() {})
+                object : AdCallBack {
+                    override fun onAdLoaded() {
+
+                    }
+
+                    override fun onAdFailToLoad(error: Exception) {
+                    }
+
+                    override fun onAdShown() {
+                    }
+
+                    override fun onAdClick() {
+                    }
+
+                    override fun onAdDismiss() {
+                    }
+
+                    override fun onAdFailToShow(error: Exception) {
+                        TODO("Not yet implemented")
+                    }
+                })
 
         }
     }
+
+    var job: Job? = null
 
     fun showOpenOrInterstitialAd(
         openAdId: String,
@@ -198,111 +254,127 @@ object CodecxAd {
         adCallBack: AdCallBack
     ) {
         if (!activity.isNetworkConnected()) {
-            adCallBack.onAdDismiss()
-        } else {
-            if ((openAdAllowed || interAdAllowed) && UMPConsent.isUMPAllowed) {
-                LoadingUtils.showAdLoadingScreen(activity, R.layout.inter_ad_loading_layout)
-            } else {
-                adCallBack.onAdDismiss()
-                return
+            Log.e("NetworkInfoD", "No Internet")
+            adCallBack.onAdFailToShow(Exception("No Internet"))
+            return
+        }
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.Main).launch {
+            try {
+                withTimeout(10_000) {
+                    if (!(openAdAllowed || interAdAllowed) || !UMPConsent.isUMPAllowed) {
+                        adCallBack.onAdFailToShow(Exception("Ad not available"))
+                        return@withTimeout
+                    }
+                    LoadingUtils.showAdLoadingScreen(activity, R.layout.inter_ad_loading_layout)
+
+                    coroutineContext.ensureActive()
+
+                    if (openAdAllowed) {
+                        val openAdSuccess = fetchOpenAd(activity, openAdId)
+                        if (openAdSuccess) {
+                            adCallBack.onAdShown()
+                            return@withTimeout
+                        }
+                    }
+
+                    if (interAdAllowed) {
+                        val interstitialSuccess = fetchInterstitialAd(activity, interAdId)
+                        if (interstitialSuccess) {
+                            adCallBack.onAdShown()
+                            return@withTimeout
+                        }
+                    }
+
+                    throw Exception("Ad not available")
+                }
+            } catch (e: TimeoutCancellationException) {
+                adCallBack.onAdFailToLoad(Exception("Ad request timed out"))
+                Log.e("NetworkInfoD", "Time cancel: ${e.message}")
+            } catch (e: Exception) {
+                Log.e("NetworkInfoD", "Exception: ${e.message}")
+                adCallBack.onAdFailToLoad(e)
+            } finally {
+                LoadingUtils.dismissScreen()
+                job?.cancel()
             }
-            if (openAdAllowed) {
-                OpenAdConfig.fetchAd(activity, openAdId, object : AdCallBack() {
-                    override fun onAdDismiss() {
-                        super.onAdDismiss()
-                        LoadingUtils.dismissScreen()
-                        adCallBack.onAdDismiss()
+        }
+    }
+
+
+    private suspend fun fetchOpenAd(activity: Activity, adId: String): Boolean {
+        return suspendCancellableCoroutine { cont ->
+            OpenAdConfig.fetchAd(activity, adId, object : AdCallBack {
+                override fun onAdShown() {
+                    if (cont.isActive) cont.resume(true)
+                }
+
+                override fun onAdClick() {
+                }
+
+                override fun onAdDismiss() {
+
+                    if (cont.isActive) cont.resume(true)
+                }
+
+                override fun onAdLoaded() {
+
+                }
+
+                override fun onAdFailToLoad(error: Exception) {
+
+                    if (cont.isActive) cont.resume(false)
+                }
+
+                override fun onAdFailToShow(error: Exception) {
+
+                    if (cont.isActive) cont.resume(false)
+                }
+            })
+
+            cont.invokeOnCancellation {
+                LoadingUtils.dismissScreen()
+            }
+        }
+    }
+
+
+    private suspend fun fetchInterstitialAd(activity: Activity, adId: String): Boolean {
+        return suspendCancellableCoroutine { cont ->
+            showInterstitial(
+                adId, true, startTimer = false, showLoadingLayout = false, timerMilliSec = 0L,
+                activity, object : AdCallBack {
+                    override fun onAdShown() {
+
+                        if (cont.isActive) cont.resume(true)
+                    }
+
+                    override fun onAdClick() {
+                    }
+
+                    override fun onAdLoaded() {
+
                     }
 
                     override fun onAdFailToLoad(error: Exception) {
-                        super.onAdFailToLoad(error)
-                        if (!interAdAllowed) {
-                            LoadingUtils.dismissScreen()
-                            adCallBack.onAdFailToLoad(error)
-                            return
-                        }
-                        showInterstitial(
-                            interAdId,
-                            interAdAllowed,
-                            startTimer = false,
-                            showLoadingLayout = false,
-                            timerMilliSec = 0L,
-                            activity,
-                            object : AdCallBack() {
-                                override fun onAdFailToLoad(error: Exception) {
-                                    super.onAdFailToLoad(error)
-                                    LoadingUtils.dismissScreen()
-                                    adCallBack.onAdFailToLoad(error)
-                                }
 
-                                override fun onAdShown() {
-                                    super.onAdShown()
-                                    LoadingUtils.dismissScreen()
-                                    adCallBack.onAdShown()
-                                }
-
-                                override fun onAdDismiss() {
-                                    super.onAdDismiss()
-                                    LoadingUtils.dismissScreen()
-                                    adCallBack.onAdDismiss()
-                                }
-
-                                override fun onAdLoaded() {
-                                    super.onAdLoaded()
-                                    adCallBack.onAdLoaded()
-                                }
-
-                                override fun onAdFailToShow(error: Exception) {
-                                    super.onAdFailToShow(error)
-                                    LoadingUtils.dismissScreen()
-                                    adCallBack.onAdFailToShow(error)
-                                }
-                            }
-                        )
-
+                        if (cont.isActive) cont.resume(false)
                     }
-                })
-            } else {
-                showInterstitial(
-                    interAdId,
-                    interAdAllowed,
-                    startTimer = false,
-                    showLoadingLayout = false,
-                    timerMilliSec = 0L,
-                    activity,
-                    object : AdCallBack() {
-                        override fun onAdFailToLoad(error: Exception) {
-                            super.onAdFailToLoad(error)
-                            LoadingUtils.dismissScreen()
-                            adCallBack.onAdFailToLoad(error)
-                        }
 
-                        override fun onAdShown() {
-                            super.onAdShown()
-                            LoadingUtils.dismissScreen()
-                            adCallBack.onAdShown()
-                        }
+                    override fun onAdDismiss() {
 
-                        override fun onAdDismiss() {
-                            super.onAdDismiss()
-                            LoadingUtils.dismissScreen()
-                            adCallBack.onAdDismiss()
-                        }
-
-                        override fun onAdLoaded() {
-                            super.onAdLoaded()
-                            adCallBack.onAdLoaded()
-                        }
-
-                        override fun onAdFailToShow(error: Exception) {
-                            super.onAdFailToShow(error)
-                            LoadingUtils.dismissScreen()
-                            adCallBack.onAdFailToShow(error)
-                        }
+                        if (cont.isActive) cont.resume(true)
                     }
-                )
+
+                    override fun onAdFailToShow(error: Exception) {
+
+                        if (cont.isActive) cont.resume(false)
+                    }
+                }
+            )
+            cont.invokeOnCancellation {
+                LoadingUtils.dismissScreen()
             }
-
         }
     }
 

@@ -12,7 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.codex.googleadssdk.GDPR.UMPConsent
 import com.codex.googleadssdk.R
-import com.codex.googleadssdk.ads.CodecxAd
+import com.codex.googleadssdk.CodecxAd
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.openAd.OpenAdConfig.getAdRequest
 import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdLoading
@@ -20,16 +20,13 @@ import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdShowing
 import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdStop
 import com.codex.googleadssdk.utils.LoadingUtils
 import com.codex.googleadssdk.utils.isNetworkConnected
-import com.codex.googleadssdk.utils.showLog
-import com.codex.googleadssdk.yandaxAds.YandexOpenApp
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
-import com.yandex.mobile.ads.common.AdRequestError.Code
-import org.jetbrains.annotations.NotNull
+import com.codex.googleadssdk.yandaxAds.YandexOpenApp
 
 class OpenApp(
     application: Application, private val adId: String,
@@ -39,7 +36,7 @@ class OpenApp(
 ) :
     Application.ActivityLifecycleCallbacks,
     LifecycleObserver {
-
+    private var adCount: Int = 1
     private var appOpenAd: AppOpenAd? = null
     private var currentActivity: Activity? = null
 
@@ -70,7 +67,6 @@ class OpenApp(
                         }
 
                         override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                            "asdas".showLog("google fail ${loadAdError.message}")
 
                             if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.shouldShowYandexOnGoogleAdFail == true) {
                                 YandexOpenApp.loadYandexOpenAd(
@@ -135,22 +131,24 @@ class OpenApp(
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onAppForegrounded() {
         if (isOpenAdStop) {
-            Log.d("asophda","True")
             isOpenAdStop = false
             return
         }
-        Log.d("asophda","False")
-        currentActivity?.let {
-            if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false && OpenAdConfig.isAdEnable() && !InterstitialAdHelper.isInterstitialLoading && !InterstitialAdHelper.isInterstitialShowing && !isOpenAdLoading && !isOpenAdShowing && !isOpenAdStop) {
-                YandexOpenApp.loadYandexOpenAd(it, isLoadingViewVisible, loadingLayout)
-            } else {
-                if (OpenAdConfig.isAdEnable() && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true && UMPConsent.isUMPAllowed && !isOpenAdStop) {
-                    fetchAd()
+        Log.d("asophda", "False")
+        if (adCount == 3) {
+            adCount = 1
+            currentActivity?.let {
+                if (CodecxAd.getAdConfig()?.isYandexAllowed == true && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == false && OpenAdConfig.isAdEnable() && !InterstitialAdHelper.isInterstitialLoading && !InterstitialAdHelper.isInterstitialShowing && !isOpenAdLoading && !isOpenAdShowing && !isOpenAdStop) {
+                    YandexOpenApp.loadYandexOpenAd(it, isLoadingViewVisible, loadingLayout)
+                } else {
+                    if (OpenAdConfig.isAdEnable() && CodecxAd.getAdConfig()?.isGoogleAdsAllowed == true && UMPConsent.isUMPAllowed && !isOpenAdStop) {
+                        fetchAd()
+                    }
                 }
             }
-
+        } else {
+            adCount++
         }
-
     }
 
 

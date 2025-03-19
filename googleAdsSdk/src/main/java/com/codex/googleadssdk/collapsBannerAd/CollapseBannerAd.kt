@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.codex.googleadssdk.GDPR.UMPConsent
-import com.codex.googleadssdk.ads.CodecxAd
-import com.codex.googleadssdk.bannerAds.BannerAd
+import com.codex.googleadssdk.CodecxAd
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -24,7 +22,7 @@ object CollapseBannerAd {
         activity: Activity,
         isAdAllowed: Boolean,
         adContainer: ViewGroup,
-        unitId: String, adCallBack: AdCallBack
+        unitId: String, adCallBack: AdCallBack? = null
     ) {
         if (isAdAllowed && UMPConsent.isUMPAllowed) {
             val extras = Bundle()
@@ -38,21 +36,22 @@ object CollapseBannerAd {
             adView.adUnitId = unitId
             adView.adListener = object : AdListener() {
                 override fun onAdLoaded() {
-                    super.onAdLoaded()
+
                     adContainer.removeAllViews()
-                    adCallBack.onAdLoaded()
+                    adCallBack?.onAdLoaded()
                     adContainer.addView(adView)
                 }
 
                 override fun onAdClicked() {
-                    super.onAdClicked()
+
                     if (CodecxAd.getAdConfig()?.isDisableResumeAdOnClick == true) {
                         OpenAdConfig.isOpenAdStop = true
                     }
                 }
+
                 override fun onAdFailedToLoad(p0: LoadAdError) {
-                    super.onAdFailedToLoad(p0)
-                    adCallBack.onAdFailToLoad(Exception(p0.message))
+
+                    adCallBack?.onAdFailToLoad(Exception(p0.message))
                     adContainer.removeAllViews()
                 }
             }

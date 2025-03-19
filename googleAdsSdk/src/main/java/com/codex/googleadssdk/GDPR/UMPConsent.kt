@@ -2,7 +2,6 @@ package com.codex.googleadssdk.GDPR
 
 import android.app.Activity
 import com.google.android.ump.ConsentDebugSettings
-import com.google.android.ump.ConsentForm
 import com.google.android.ump.ConsentRequestParameters
 import com.google.android.ump.UserMessagingPlatform
 

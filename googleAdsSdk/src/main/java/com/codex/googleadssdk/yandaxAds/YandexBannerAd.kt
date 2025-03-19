@@ -8,7 +8,6 @@ import com.yandex.mobile.ads.banner.BannerAdSize
 import com.yandex.mobile.ads.banner.BannerAdView
 import com.yandex.mobile.ads.common.AdRequest
 import com.yandex.mobile.ads.common.AdRequestError
-import com.yandex.mobile.ads.common.AdSize
 import com.yandex.mobile.ads.common.ImpressionData
 
 object YandexBannerAd {
@@ -16,7 +15,7 @@ object YandexBannerAd {
         isAdAllowed: Boolean,
         adContainer: ViewGroup,
         unitId: String,
-        context: Context, adCallBack: AdCallBack
+        context: Context, adCallBack: AdCallBack?
     ) {
 
         if (isAdAllowed) {
@@ -26,12 +25,12 @@ object YandexBannerAd {
             yandexBannerAd.setBannerAdEventListener(object : BannerAdEventListener {
                 override fun onAdLoaded() {
                     adContainer.removeAllViews()
-                    adCallBack.onAdLoaded()
+                    adCallBack?.onAdLoaded()
                     adContainer.addView(yandexBannerAd)
                 }
 
                 override fun onAdFailedToLoad(p0: AdRequestError) {
-                    adCallBack.onAdFailToLoad(Exception(p0.description))
+                    adCallBack?.onAdFailToLoad(Exception(p0.description))
                     adContainer.removeAllViews()
                 }
 

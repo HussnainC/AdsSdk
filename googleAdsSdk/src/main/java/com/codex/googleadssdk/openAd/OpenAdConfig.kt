@@ -2,7 +2,6 @@ package com.codex.googleadssdk.openAd
 
 import android.app.Activity
 import android.util.Log
-import com.codex.googleadssdk.ads.CodecxAd
 import com.codex.googleadssdk.googleads.InterstitialAdHelper
 import com.codex.googleadssdk.interfaces.AdCallBack
 import com.codex.googleadssdk.utils.LoadingUtils
@@ -12,6 +11,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
+import com.codex.googleadssdk.CodecxAd
 
 object OpenAdConfig {
     private var appOpenAd: AppOpenAd? = null
@@ -21,6 +21,10 @@ object OpenAdConfig {
     var isOpenAdStop: Boolean = false
     fun enableResumeAd() {
         isOpenAdAllowed = true
+    }
+
+    fun openActionDisable() {
+        isOpenAdStop = true
     }
 
     fun disableResumeAd() {
@@ -38,10 +42,13 @@ object OpenAdConfig {
                     val loadCallback: AppOpenAd.AppOpenAdLoadCallback =
                         object : AppOpenAd.AppOpenAdLoadCallback() {
                             override fun onAdLoaded(ad: AppOpenAd) {
-                                isOpenAdLoading = false
-                                appOpenAd = ad
-                                adCallBack?.onAdLoaded()
-                                loadAdShowAd(activity, adCallBack)
+                                if (CodecxAd.job?.isActive == true) {
+                                    isOpenAdLoading = false
+                                    appOpenAd = ad
+                                    adCallBack?.onAdLoaded()
+                                    loadAdShowAd(activity, adCallBack)
+                                }
+
                             }
 
                             override fun onAdFailedToLoad(loadAdError: LoadAdError) {

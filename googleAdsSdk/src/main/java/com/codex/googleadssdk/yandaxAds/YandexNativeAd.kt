@@ -29,9 +29,9 @@ object YandexNativeAd {
             nativeAdBinder.setMediaView(findViewById(R.id.y_ad_media))
             nativeAdBinder.setIconView(findViewById(R.id.y_ad_app_icon))
             nativeAdBinder.setPriceView(findViewById(R.id.y_price))
-            nativeAdBinder.setFaviconView(findViewById(R.id.y_ad_fav_icon))
-            nativeAdBinder.setReviewCountView(findViewById(R.id.y_reviewCount))
-            nativeAdBinder.setBodyView(findViewById(R.id.y_ad_body))
+//            nativeAdBinder.setFaviconView(findViewById(R.id.y_ad_fav_icon))
+//            nativeAdBinder.setReviewCountView(findViewById(R.id.y_reviewCount))
+//            nativeAdBinder.setBodyView(findViewById(R.id.y_ad_body))
         }
         nativeAd.bindNativeAd(nativeAdBinder.build())
     }
@@ -82,12 +82,12 @@ object YandexNativeAd {
                 }
 
                 override fun onAdFailToLoad(error: Exception) {
-                    super.onAdFailToLoad(error)
+                    
                     adListener?.onAdFailToLoad(error)
                 }
 
                 override fun onAdFailToShow(error: Exception) {
-                    super.onAdFailToShow(error)
+                    
                     adListener?.onAdFailToShow(error)
                 }
             }

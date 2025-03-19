@@ -2,7 +2,7 @@ package com.codex.googleadssdk.yandaxAds
 
 import android.app.Activity
 import com.codex.googleadssdk.R
-import com.codex.googleadssdk.ads.CodecxAd
+import com.codex.googleadssdk.CodecxAd
 import com.codex.googleadssdk.openAd.OpenAdConfig
 import com.codex.googleadssdk.openAd.OpenAdConfig.isOpenAdLoading
 import com.codex.googleadssdk.utils.LoadingUtils

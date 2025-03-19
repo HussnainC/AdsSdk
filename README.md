@@ -42,19 +42,19 @@
                 interAdId,
                 openAdAllowed ,
                 interAdAllowed , context,
-                object : AdCallBack() {
+                object : AdCallBack {
                     override fun onAdDismiss() {
-                        super.onAdDismiss()
+                        
                        
                     }
 
                     override fun onAdFailToLoad(error: Exception) {
-                        super.onAdFailToLoad(error)
+                        
                      
                     }
 
                     override fun onAdFailToShow(error: Exception) {
-                        super.onAdFailToShow(error)
+                        
                        
                     }
                 })
@@ -67,7 +67,7 @@
             showLoadingLayout = true,
             timerMilliSec = 10000L,
             activity = this,
-            object : AdCallBack() {
+            object : AdCallBack {
 
             }
         )
@@ -169,22 +169,22 @@
 
 	findViewById<CodecxNativeAdView>(R.id.nativeAdLayout).populateNativeAd(
             getString(R.string.nativeTestAd),
-            this, object : AdCallBack() {
+            this, object : AdCallBack {
                 override fun onAdFailToShow(error: Exception) {
-                    super.onAdFailToShow(error)
+                    
                 }
 
                 override fun onAdFailToLoad(error: Exception) {
-                    super.onAdFailToLoad(error)
+                    
                 
                 }
 
                 override fun onAdShown() {
-                    super.onAdShown()
+                    
                 
                 }
                 override fun onAdLoaded() {
-                    super.onAdLoaded()
+                    
         
                 }
             }

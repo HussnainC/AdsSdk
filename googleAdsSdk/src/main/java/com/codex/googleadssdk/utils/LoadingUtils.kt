@@ -30,6 +30,7 @@ object LoadingUtils {
             "asdjap".showLog(ex.message.toString())
         }
     }
+    val isShowing: Boolean get() = dialog?.isShowing == true
 
     fun dismissScreen() {
         try {

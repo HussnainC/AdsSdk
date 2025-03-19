@@ -1,9 +1,8 @@
 package com.codex.googleadmobads
 
 import android.app.Application
-import com.codex.googleadssdk.ads.CodecxAd
-import com.codex.googleadssdk.ads.CodecxAdsConfig
-import com.codex.googleadssdk.openAd.OpenAdConfig
+import com.codex.googleadssdk.CodecxAd
+import com.codex.googleadssdk.CodecxAdsConfig
 import com.codex.googleadssdk.openAd.OpenApp
 
 class ApplicationClass : Application() {
@@ -14,11 +13,11 @@ class ApplicationClass : Application() {
     }
     private fun initAds() {
         CodecxAd.initAds(
-            CodecxAdsConfig.Builder().setIsDebugged(true)
+            CodecxAdsConfig.builder().setIsDebugged(true)
                 .setIsYandexAllowed(false)
                 .setIsGoogleAdsAllowed(true)
                 .setDisableResumeAdOnClick(true)
-                .setShowYandexOnGoogleAdFail(false).onNextInterstitial(true).build(), this
+                .setShowYandexOnGoogleAdFail(false).build(), this
         )
     }
 }
